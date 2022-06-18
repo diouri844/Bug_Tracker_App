@@ -7,6 +7,7 @@
     </nav>
     <login-form v-show="show_login"></login-form>
     <RegistrationForm v-show="show_registration"></RegistrationForm>
+    <notifications />
 </template>
 <script>
 import loginForm from "@/components/LoginForm.vue"
@@ -26,6 +27,7 @@ export default {
     update_btn_state(){
       this.show_login=!this.show_login;
       this.show_registration=!this.show_registration;
+      // using options
       console.log(this.login,this.show_registration)
     }
   }

@@ -6,38 +6,81 @@
         <div class="form_body">
             <div class="body-item">
                 <label><i class="fa-solid fa-user"></i> ferst <span>name</span></label>
-                <input type="text" placeholder="Ch__open866">
+                <input type="text" placeholder="Ch__open866" v-model="user_fname">
             </div>
             <div class="body-item">
                 <label><i class="fa-solid fa-user"></i> last <span>name</span></label>
-                <input type="text" placeholder="Ch__open866">
+                <input type="text" placeholder="Ch__open866" v-model="user_lname">
             </div>
             <div class="body-item">
                 <label><i class="fa-solid fa-envelope"></i> <span>email</span></label>
-                <input type="email" placeholder="Ch__open866@gmail.com">
+                <input type="email" placeholder="Ch__open866@gmail.com" v-model="user_email">
             </div>
             <div class="body-item">
                 <label><i class="fa-solid fa-envelope"></i> birth-<span>day</span></label>
-                <input type="date">
+                <input type="date" v-model="user_Bdate">
             </div>
             <div class="body-item">
                 <label><i class="fa-solid fa-key"></i> user <span>password</span></label>
-                <input type="password" placeholder="****************">
+                <input type="password" placeholder="****************" v-model="user_password">
             </div>
             <div class="body-item">
                 <label><i class="fa-solid fa-key"></i> confirme <span>password</span></label>
-                <input type="password" placeholder="****************">
+                <input type="password" placeholder="****************" v-model="user_password_confirmation">
             </div>
-            <button class="login-btn">create account <i class="fa-solid fa-plus"></i> </button>
+            <button class="login-btn" v-on:click="check_user_registration">create account <i class="fa-solid fa-plus"></i> </button>
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    data(){
+        return{
+            "user_fname":"",
+            "user_lname":"",
+            "user_email":"",
+            "user_Bdate":"",
+            "user_password":"",
+            "user_password_confirmation":""
+        }
+    },
+    methods:{
+        check_user_registration(){
+            let counter = 0;
+            if(this.user_fname.length>3){
+                counter++;
+            }
+            if(this.user_lname.length>5){
+                counter++;
+            }
+            if(this.user_email.length>10){
+                counter++;
+            }
+            if(new Date(this.user_Bdate).getFullYear()<2004){
+                counter++;
+            }
+            if(this.user_password.length>8){
+                counter++;
+            }
+            if(this.user_password_confirmation.length>8){
+                counter++;
+            }
+            if(this.user_password===this.user_password_confirmation){
+                counter++;
+            }
+            console.log(counter);
+        }
+    }
+}
+</script>
+
 
 
 <style scoped>
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
-        background-color:#80827d;
+        background:transparent;
         padding:2px;
         font-size: 14px;
         margin:auto auto;
@@ -60,13 +103,13 @@
         text-transform: capitalize;
         border-radius: 5px;
         border: 1px solid #c6d9dc;
-        background-color:#238636;
-        color: #c6d9dc;
+        background-color:#fff;
+        color: #ccca0d;
     }
     .login-btn:hover{
-        background-color:#0d0f0c;
-        color:#c6d9dc;
-        border: 1px solid #c6d9dc; 
+        background-color:#ccca0d;
+        color:#fff;
+        border: 1px solid #ccca0d; 
     }
     .body-item{
         display:grid;
@@ -78,11 +121,13 @@
     input{
         width:80%;
         margin-left:5%;
-        border-radius:25px;
-        border: 1px solid #c6d9dc;
+        border-top: 0;
+        border-bottom: 0;
+        border-right: 0;
+        border-left: 5px solid #c6d9dc;
         padding: 10px 10px;
-        background-color:#c6d9dc;
-        color:#0d0f0c;
+        background:transparent;
+        color:#c6d9dc;
     }
     label{
         font-size:17px;
