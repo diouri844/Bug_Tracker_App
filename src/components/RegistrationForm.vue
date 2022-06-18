@@ -28,7 +28,7 @@
                 <label><i class="fa-solid fa-key"></i> confirme <span>password</span></label>
                 <input type="password" placeholder="****************">
             </div>
-            <button class="login-btn">create account <i class="fa-solid fa-arrow-right-to-bracket"></i> </button>
+            <button class="login-btn">create account <i class="fa-solid fa-plus"></i> </button>
         </div>
     </div>
 </template>
@@ -37,21 +37,20 @@
 <style scoped>
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
-        background:transparent;
+        background-color:#80827d;
         padding:2px;
         font-size: 14px;
         margin:auto auto;
         border:1px solid #c6d9dc;
         border-radius: 15px;
-        width:300px;
+        width:700px;
     }
     .header{
         text-transform: capitalize;
         color:#0d0f0c;
-        
     }
     span{
-        color:#238636;
+        color:#CCCA0D;
     }
     .login-btn{
         padding: 10px 10px;
@@ -72,6 +71,7 @@
     .body-item{
         display:grid;
         grid-template-rows: 1fr;
+        grid-template-columns:repeat(2,1fr);
         align-items: left;
         margin:10px 0;
     }
@@ -81,8 +81,8 @@
         border-radius:25px;
         border: 1px solid #c6d9dc;
         padding: 10px 10px;
-        background:transparent;
-        color:#c6d9dc;
+        background-color:#c6d9dc;
+        color:#0d0f0c;
     }
     label{
         font-size:17px;

@@ -25,7 +25,7 @@
 <style scoped>
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
-        background:transparent;
+        background-color:#80827d;
         padding:2px;
         font-size: 14px;
         margin:auto auto;
@@ -36,10 +36,9 @@
     .header{
         text-transform: capitalize;
         color:#0d0f0c;
-        
     }
     span{
-        color:#238636;
+        color:#CCCA0D;
     }
     .login-btn{
         padding: 10px 10px;
@@ -49,13 +48,13 @@
         text-transform: capitalize;
         border-radius: 5px;
         border: 1px solid #c6d9dc;
-        background-color:#238636;
-        color: #c6d9dc;
+        background-color:#fff;
+        color: #ccca0d;
     }
     .login-btn:hover{
-        background-color:#0d0f0c;
-        color:#c6d9dc;
-        border: 1px solid #c6d9dc; 
+        background-color:#ccca0d;
+        color:#fff;
+        border: 1px solid #ccca0d; 
     }
     .body-item{
         display:grid;
@@ -69,7 +68,8 @@
         border-radius:25px;
         border: 1px solid #c6d9dc;
         padding: 10px 10px;
-        background:transparent;
+        background-color:#80827d;/*
+        background-color:#c6d9dc;*/
         color:#c6d9dc;
     }
     label{
