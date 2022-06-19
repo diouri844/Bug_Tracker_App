@@ -1,21 +1,23 @@
 <template>
-    <div class="form">
-        <div class="header">
-            <h1>login <span>now</span></h1>
+    <Transition name="bounce" appear>
+        <div class="form">
+            <div class="header">
+                <h1>login <span>now</span></h1>
+            </div>
+            <div class="form_body">
+                <div class="body-item">
+                    <input type="text" placeholder=" user name " v-model="user_name">
+                </div>
+                <div class="body-item">
+                    <input type="email" placeholder=" email" v-model="user_email">
+                </div>
+                <div class="body-item">
+                    <input type="password" placeholder=" Password " v-model="user_password">
+                </div>
+                <button class="login-btn" v-on:click="check_user_input">login <i class="fa-solid fa-arrow-right-to-bracket"></i> </button>
+            </div>
         </div>
-        <div class="form_body">
-            <div class="body-item">
-                <input type="text" placeholder=" user name " v-model="user_name">
-            </div>
-            <div class="body-item">
-                <input type="email" placeholder=" email" v-model="user_email">
-            </div>
-            <div class="body-item">
-                <input type="password" placeholder=" Password " v-model="user_password">
-            </div>
-            <button class="login-btn" v-on:click="check_user_input">login <i class="fa-solid fa-arrow-right-to-bracket"></i> </button>
-        </div>
-    </div>
+    </Transition>
 </template>
 
 <script>
@@ -56,6 +58,24 @@ export default {
 
 
 <style scoped>
+    /* animation setup  */
+    .bounce-enter-active {
+        animation: bounce-in 2.5s;
+    }
+    .bounce-leave-active {
+        opacity:0;
+    }
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.25);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
         background:#fff;

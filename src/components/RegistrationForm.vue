@@ -1,33 +1,35 @@
 <template>
-    <div class="form">
-        <div class="header">
-            <h1>create account <span>now</span></h1>
+    <transition name="bounce" appear>
+        <div class="form">
+            <div class="header">
+                <h1>create account <span>now</span></h1>
+            </div>
+            <div class="form_body">
+                <div class="body-item">
+                    <input type="text" placeholder="Ferst Name" v-model="user_fname">
+                </div>
+                <div class="body-item">
+                    <input type="text" placeholder="Last Name" v-model="user_lname">
+                </div>
+                <div class="body-item">
+                    <input type="email" placeholder="Email address" v-model="user_email">
+                </div>
+                <div class="body-item">
+                    <input type="date" v-model="user_Bdate">
+                </div>
+                <div class="body-item">
+                    <input type="password" placeholder="Password" v-model="user_password">
+                </div>
+                <div class="body-item">
+                    <input type="password" placeholder="Confirm your password" v-model="user_password_confirmation">
+                </div>
+                <button class="login-btn" v-on:click="check_user_registration">create account <i class="fa-solid fa-plus"></i> </button>
+            </div>
         </div>
-        <div class="form_body">
-            <div class="body-item">
-                <input type="text" placeholder="Ferst Name" v-model="user_fname">
-            </div>
-            <div class="body-item">
-                <input type="text" placeholder="Last Name" v-model="user_lname">
-            </div>
-            <div class="body-item">
-                <input type="email" placeholder="Email address" v-model="user_email">
-            </div>
-            <div class="body-item">
-                <input type="date" v-model="user_Bdate">
-            </div>
-            <div class="body-item">
-                <input type="password" placeholder="Password" v-model="user_password">
-            </div>
-            <div class="body-item">
-                <input type="password" placeholder="Confirm your password" v-model="user_password_confirmation">
-            </div>
-            <button class="login-btn" v-on:click="check_user_registration">create account <i class="fa-solid fa-plus"></i> </button>
-        </div>
-    </div>
+    </transition>
 </template>
 
-<script>
+<script scoped>
 export default {
     data(){
         return{
@@ -41,29 +43,45 @@ export default {
     },
     methods:{
         check_user_registration(){
-            let counter = 0;
+            let counter_ckeck = 0;
             if(this.user_fname.length>3){
-                counter++;
+                counter_ckeck+=1;
             }
             if(this.user_lname.length>5){
-                counter++;
+                counter_ckeck+=1;
             }
             if(this.user_email.length>10){
-                counter++;
+                counter_ckeck+=1;
             }
-            if(new Date(this.user_Bdate).getFullYear()<2004){
-                counter++;
+            if(new Date(this.user_Bdate).getFullYear()<=2004){
+                counter_ckeck+=1;
             }
             if(this.user_password.length>8){
-                counter++;
+                counter_ckeck+=1;
             }
             if(this.user_password_confirmation.length>8){
-                counter++;
+                counter_ckeck+=1;
             }
             if(this.user_password===this.user_password_confirmation){
-                counter++;
+                counter_ckeck+=1;
+                if(counter_ckeck===7){
+                console.log("creating an new account ");
+                }else{
+                    this.$notify({
+                        type:"error",
+                        title: "Error !!",
+                        text: "all fields must be completed !!",
+                        position:"bottom right"
+                    });
+                }
+            }else{
+                this.$notify({
+                    type:"error",
+                    title: "Error !!",
+                    text: "Password and confirmation password must be the same !!",
+                    position:"bottom right"
+                });
             }
-            console.log(counter);
         }
     }
 }
@@ -72,6 +90,24 @@ export default {
 
 
 <style scoped>
+        /* animation setup  */
+    .bounce-enter-active {
+        animation: bounce-in 1.5s;
+    }
+    .bounce-leave-active {
+        opacity:0;
+    }
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
         background:#fff;
