@@ -1,9 +1,12 @@
 <template>
-    <h1> bug tracer app by <span>Ch</span>__<span>B</span>uilder</h1>
-    <hr class="ligne">
     <nav>
-      <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-right-to-bracket"></i></button>
-      <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-user-plus"></i></button>
+      <div class="nav-header">
+          <h1> bug tracer app by <span>Ch</span>__<span>B</span>uilder</h1>
+        <div class="nav-links">
+          <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-right-to-bracket"></i></button>
+          <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-user-plus"></i></button>
+        </div>
+      </div>
     </nav>
     <login-form v-show="show_login"></login-form>
     <RegistrationForm v-show="show_registration"></RegistrationForm>
@@ -38,14 +41,18 @@ export default {
   font-family: Times, "Times New Roman", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /*text-align: center;
   display: flex;
-  justify-content: center;
+  /*justify-content: center;
   align-items: center;
-  display: inline;
-  margin:10% auto;
+  display: inline;*/
 }
-
+.nav-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
 
 h1{
   text-transform: capitalize;
@@ -56,33 +63,15 @@ span{
   color:#CCCA0D;
 }
 
-.ligne{
-  margin-left:35%;
-  width: 50px;
-  height: 1px;
-  background-color: #CCCA0D;
-  border: none;
-  margin-top: -7px;
-  margin-bottom: 3%;
-}
-nav{
-  margin-bottom: 3%;
-}
 .nav-item{
-  padding: 10px 10px;
-  margin:10px 10px;
+  margin-left: 2rem;
+  color:#c6d9dc;
   background:transparent;
-  color:#CCCA0D;
-  border-top:0px;
-  border-right:0px;
-  border-bottom:0px;
-  border-left:3px solid #fff; 
-  border-radius:10px;
+  border:none;
   font-size:24px;
 }
 .nav-item:hover{
-  border-left:3px solid #c6d9dc;
-  color: #238636;
+  color: #fff;
 }
 
 </style>

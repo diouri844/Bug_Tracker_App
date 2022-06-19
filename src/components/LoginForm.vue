@@ -5,16 +5,13 @@
         </div>
         <div class="form_body">
             <div class="body-item">
-                <label><i class="fa-solid fa-user"></i> user <span>name</span></label>
-                <input type="text" placeholder="Ch__open866" v-model="user_name">
+                <input type="text" placeholder=" user name " v-model="user_name">
             </div>
             <div class="body-item">
-                <label><i class="fa-solid fa-envelope"></i> user <span>email</span></label>
-                <input type="email" placeholder="Ch__open866@gmail.com" v-model="user_email">
+                <input type="email" placeholder=" email" v-model="user_email">
             </div>
             <div class="body-item">
-                <label><i class="fa-solid fa-key"></i> user <span>password</span></label>
-                <input type="password" placeholder="****************" v-model="user_password">
+                <input type="password" placeholder=" Password " v-model="user_password">
             </div>
             <button class="login-btn" v-on:click="check_user_input">login <i class="fa-solid fa-arrow-right-to-bracket"></i> </button>
         </div>
@@ -61,17 +58,21 @@ export default {
 <style scoped>
     .form{
         font-family: Times, "Times New Roman", Georgia, serif;
-        background:transparent;
+        background:#fff;
         padding:2px;
         font-size: 14px;
-        margin:auto auto;
-        border:1px solid #c6d9dc;
+        margin-left:auto;
+        margin-right: auto;
+        margin-top: 60px;
+        border:1px solid #E8126B;
         border-radius: 15px;
         width:300px;
     }
     .header{
         text-transform: capitalize;
-        color:#0d0f0c;
+        color:#c6d9dc;
+        text-align:center;
+        align-items: center;
     }
     span{
         color:#CCCA0D;
@@ -79,7 +80,8 @@ export default {
     .login-btn{
         padding: 10px 10px;
         margin-bottom: 10px;
-        width: 250px;
+        margin-left:10%;
+        width: 80%;
         text-align: center;
         text-transform: capitalize;
         border-radius: 5px;
@@ -99,20 +101,13 @@ export default {
         margin:10px 0;
     }
     input{
-        width:80%;
-        margin-left:5%;
+        width:70%;
+        margin:10px 12%;
         border-top: 0;
         border-bottom: 0;
         border-right: 0;
         border-left: 5px solid #c6d9dc;
         padding: 10px 10px;
-        color:#c6d9dc;
-    }
-    label{
-        font-size:17px;
-        text-transform: capitalize;
-        text-align: center;
-        margin-bottom: 10px;
         color:#c6d9dc;
     }
 </style>
