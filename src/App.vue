@@ -1,7 +1,7 @@
 <template>
-    <nav>
+    <nav v-if="is_home">
       <div class="nav-header">
-          <h1> bug tracer app by <span>Ch</span>__<span>B</span>uilder</h1>
+          <h1> bug tracker app by <span>Ch</span>__<span>B</span>uilder</h1>
         <div class="nav-links">
           <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-right-to-bracket"></i></button>
           <button class="nav-item" v-on:click="update_btn_state"><i class="fa-solid fa-user-plus"></i></button>
@@ -23,7 +23,8 @@ export default {
   data() {
     return{
       'show_login':true,
-      'show_registration':false
+      'show_registration':false,
+      'is_home':true
     }
   },
   methods:{
