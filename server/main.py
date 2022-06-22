@@ -21,7 +21,7 @@ def authentification():
         user_pswd = data['pswd']
         response = get_connexion_details(user_name,user_email,user_pswd)
         print(response)
-        return jsonify({"message response ":"server authentification is loaded !! "})
+        return jsonify({"message response ":"server authentification is loaded !! "+str(response)})
 
 
 
