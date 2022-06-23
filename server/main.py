@@ -23,6 +23,27 @@ def authentification():
         print(response)
         return jsonify({"message response ":"server authentification is loaded !! "+str(response)})
 
+@my_app.route("/get-registration",methods=["POST"])
+@cross_origin()
+def registration():
+    if request.method == "POST":
+        registration_data = request.form.to_dict()
+        print("server registration is loaded !! ")
+        print(registration_data)
+        response = check_account_registration(registration_data['FerstName'],
+                                              registration_data['LastName'],
+                                              registration_data['Email'],
+                                              registration_data['Password'])
+        if response == 1: 
+            return jsonify({"registration response : ": "account already exists " })
+        else:
+             # creation new user document : 
+            response_insert_user = create_user_document(registration_data['FerstName'],
+                                              registration_data['LastName'],
+                                              registration_data['Email'],
+                                              registration_data['Password'])
+            return jsonify({"registration response : ": " creating new account 100% ............ "})
+
 
 
 if __name__=="__main__":

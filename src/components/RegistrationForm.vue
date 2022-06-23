@@ -30,6 +30,9 @@
 </template>
 
 <script scoped>
+
+import axios from "axios"
+
 export default {
     data(){
         return{
@@ -66,6 +69,19 @@ export default {
                 counter_ckeck+=1;
                 if(counter_ckeck===7){
                 console.log("creating an new account ");
+                /* regstration protocole :  */
+                let user_registration_data = new FormData();
+                user_registration_data.append("FerstName",this.user_fname);
+                user_registration_data.append("LastName",this.user_lname);
+                user_registration_data.append("Email",this.user_email);
+                user_registration_data.append("Password",this.user_password);
+                /* show data :  */
+                console.log(user_registration_data);
+                axios.post("http://127.0.0.1:5000/get-registration",user_registration_data).then(response => {
+                    console.log(response);
+                }).catsh(error => {
+                    console.err(error);
+                });
                 }else{
                     this.$notify({
                         type:"error",
