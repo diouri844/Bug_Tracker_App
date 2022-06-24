@@ -79,6 +79,12 @@ export default {
                 console.log(user_registration_data);
                 axios.post("http://127.0.0.1:5000/get-registration",user_registration_data).then(response => {
                     console.log(response);
+                    this.$notify({
+                        type:"succses",
+                        title: "Creating New account ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
                 }).catsh(error => {
                     console.err(error);
                 });

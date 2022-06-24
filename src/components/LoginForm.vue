@@ -48,6 +48,12 @@ export default {
                 console.log(login_data);
                 axios.post("http://127.0.0.1:5000/get-auth",login_data).then(response => {
                     console.log(response);
+                    this.$notify({
+                        type:"succses",
+                        title: "Login ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
                 }).catsh(error => {
                     console.err(error);
                 });
