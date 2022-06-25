@@ -40,24 +40,32 @@ export default {
             }
             // check if counter == 3
             if(this.checked_counter===3){
-                console.log(" get connexion api ");
                 let login_data = new FormData() 
                 login_data.append("name",this.user_name);
                 login_data.append("email",this.user_email);
                 login_data.append("pswd",this.user_password);
-                console.log(login_data);
                 axios.post("http://127.0.0.1:5000/get-auth",login_data).then(response => {
-                    console.log(response);
-                    this.$notify({
+                    if(response.data.statelogin===1){
+                        this.$notify({
                         type:"succses",
                         title: "Login ",
                         text: response.data.message,
                         position:"bottom right"
                     });
+                    // send custom event to the main component (app):
+                    this.$emit("toogleComponent",this.user_name);
+                    }else{
+                        this.$notify({
+                        type:"error",
+                        title: "Login ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
+                    }
+                    
                 }).catsh(error => {
                     console.err(error);
                 });
-                console.log(login_data);
             }else{
                 console.log(this.checked_counter);
                 this.$notify({
@@ -67,7 +75,6 @@ export default {
                 position:"bottom right"
             });
             }
-            
         }
     }
 }

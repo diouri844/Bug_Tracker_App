@@ -19,28 +19,33 @@ def authentification():
         user_name = data['name']
         user_email = data['email']
         user_pswd = data['pswd']
+        connexion_state = 0
         response = get_connexion_details(user_name,user_email,user_pswd)
         print(response)
-        return jsonify({"message":response})
+        if response == "welcom back again  "+str(user_name):
+            connexion_state = 1
+        return jsonify({"message":response,"statelogin":connexion_state})
 
 @my_app.route("/get-registration",methods=["POST"])
 @cross_origin()
 def registration():
     if request.method == "POST":
         registration_data = request.form.to_dict()
+        registration_state = 0
         response = check_account_registration(registration_data['FerstName'],
                                               registration_data['LastName'],
                                               registration_data['Email'],
                                               registration_data['Password'])
         if response == 1: 
-            return jsonify({"message": "account already exists " })
+            return jsonify({"message": "account already exists ",'RegistrationState':registration_state })
         else:
-             # creation new user document : 
+             # creation new user document :
+            registration_state = 1 
             response_insert_user = create_user_document(registration_data['FerstName'],
                                               registration_data['LastName'],
                                               registration_data['Email'],
                                               registration_data['Password'])
-            return jsonify({"message": response_insert_user})
+            return jsonify({"message": response_insert_user,'RegistrationState':registration_state})
 
 
 

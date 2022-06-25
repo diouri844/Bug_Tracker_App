@@ -23,7 +23,8 @@
                 <div class="body-item">
                     <input type="password" placeholder="Confirm your password" v-model="user_password_confirmation">
                 </div>
-                <button class="login-btn" v-on:click="check_user_registration">create account <i class="fa-solid fa-plus"></i> </button>
+                <button class="login-btn" id="login-btn" v-on:click="check_user_registration"> {{ this.login_button_body }} 
+                <i class='fa-solid fa-plus'></i></button>
             </div>
         </div>
     </transition>
@@ -41,11 +42,13 @@ export default {
             "user_email":"",
             "user_Bdate":"",
             "user_password":"",
-            "user_password_confirmation":""
+            "user_password_confirmation":"",
+            "login_button_body":"create account "
         }
     },
     methods:{
         check_user_registration(){
+            this.login_button_body = "Creating a new account .....";
             let counter_ckeck = 0;
             if(this.user_fname.length>3){
                 counter_ckeck+=1;
@@ -68,7 +71,6 @@ export default {
             if(this.user_password===this.user_password_confirmation){
                 counter_ckeck+=1;
                 if(counter_ckeck===7){
-                console.log("creating an new account ");
                 /* regstration protocole :  */
                 let user_registration_data = new FormData();
                 user_registration_data.append("FerstName",this.user_fname);
@@ -76,15 +78,25 @@ export default {
                 user_registration_data.append("Email",this.user_email);
                 user_registration_data.append("Password",this.user_password);
                 /* show data :  */
-                console.log(user_registration_data);
                 axios.post("http://127.0.0.1:5000/get-registration",user_registration_data).then(response => {
                     console.log(response);
-                    this.$notify({
+                    if(response.data.RegistrationState===1){
+                        this.$notify({
                         type:"succses",
                         title: "Creating New account ",
                         text: response.data.message,
                         position:"bottom right"
                     });
+                    // send custom event to the main component (app):
+                    this.$emit("toogletologin");
+                    }else{
+                        this.$notify({
+                        type:"error",
+                        title: "Creating New account ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
+                    }
                 }).catsh(error => {
                     console.err(error);
                 });
