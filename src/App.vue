@@ -10,7 +10,7 @@
     </nav>
     <login-form v-show="show_login" @toogleComponent="updateLoginState($event)"></login-form>
     <RegistrationForm v-show="show_registration" @toogletologin="updateRegistrationStatetoLogin"></RegistrationForm>
-    <DashbroadUser v-if="isMainPage" v-bind:userName="this.currentConnectedUser" ></DashbroadUser>
+    <DashbroadUser v-if="isMainPage" v-bind:userName="this.currentConnectedUser" @tooglelogout="logout_to_home" ></DashbroadUser>
     <notifications />
 </template>
 <script>
@@ -50,6 +50,11 @@ export default {
     updateRegistrationStatetoLogin(){
       this.show_registration = false;
       this.show_login = true;
+    },
+    logout_to_home(){
+      this.isMainPage= false;
+      this.show_login = true;
+      this.is_home = true;
     }
   }
 }
