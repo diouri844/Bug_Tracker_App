@@ -6,27 +6,18 @@
                 <div class="col col-2"><i class="fa-solid fa-user-tie"></i> Owner </div>
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
-                <div class="col col-5"><i class="fa-solid fa-magnifying-glass"></i> <input type="text" placeholder="Search" class="input_search" /> </div>
             </li>
             <li class="table-row">
                 <div class="col col-1" data-label="Job Id">42235</div>
                 <div class="col col-2" data-label="Customer Name">John Doe</div>
                 <div class="col col-3 team-name" data-label="Amount" >Google-azur-closed-team</div>
                 <div class="col col-4" data-label="Payment Status">in deployment</div>
-                <div class="col col-5" data-label="Payment Status">
-                    <button class=" btn btn-outline-info fa-solid fa-circle-info me-2"></button>
-                    <button class="btn btn-outline-light fa-solid fa-pen"></button>
-                </div>
             </li>
             <li class="table-row">
                 <div class="col col-1" data-label="Job Id">42655</div>
                 <div class="col col-2" data-label="Customer Name">Chopen</div>
                 <div class="col col-3 team-name" data-label="Amount" >Py_charp</div>
                 <div class="col col-4" data-label="Payment Status">in deployment</div>
-                <div class="col col-5" data-label="Payment Status">
-                    <button class=" btn btn-outline-info fa-solid fa-circle-info me-2"></button>
-                    <button class="btn btn-outline-light fa-solid fa-pen"></button>
-                </div>
             </li>
         </ul>
 </div>
@@ -64,7 +55,12 @@ body {
   padding-left: 10px;
   padding-right: 10px;
 }
-
+/*
+    <div class="col col-5" data-label="Payment Status">
+                    <button class=" btn btn-outline-info fa-solid fa-circle-info me-2"></button>
+                    <button class="btn btn-outline-light fa-solid fa-pen"></button>
+                </div>
+*/
 
 .responsive-table li {
     border-radius: 3px;
@@ -98,13 +94,7 @@ body {
     padding:2px 1px;
     margin-right:25px;
 }
-.input_search{
-    padding: 3px 8px;
-    border:none;
-    border-radius:15px;
-    color:#fff;
-    background:transparent;
-}
+
 
 .responsive-table .col-1 {
     flex-basis: 10%;
@@ -119,9 +109,6 @@ body {
     flex-basis: 25%;
 }
 
-.responsive-table .col-5 {
-    flex-basis: 25%;
-}
   
 .table-header {
     display: none;
