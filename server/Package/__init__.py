@@ -69,3 +69,23 @@ def create_user_document(user_fname,user_lname,user_email,user_password):
         response = e
     return response
 
+# ============= All projects functions services :
+
+def get_project_user(user_target):
+    # define cofig vars : 
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # get query user owner of project :
+    project_result = list(my_db.Project.find(
+        {
+            'Owner':user_target
+        },{
+            '_id':0
+        }
+    ))
+    # that return a list of project :
+    return project_result

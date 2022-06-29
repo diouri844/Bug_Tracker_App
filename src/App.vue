@@ -64,11 +64,6 @@ export default {
   font-family: Times, "Times New Roman", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /*text-align: center;
-  display: flex;
-  /*justify-content: center;
-  align-items: center;
-  display: inline;*/
 }
 .nav-header{
   display: flex;

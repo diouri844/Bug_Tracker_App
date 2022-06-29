@@ -26,6 +26,7 @@
       </ul>
     </div>
     <UserProjectList class="side-item" v-show="isdefault"></UserProjectList>
+    <SearchResultUser class="side-item" v-show="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
   </div>
   
 </template>
@@ -33,16 +34,23 @@
 <script>
 // separt dashbroad to many components : teams list/current user projects-engagement:
 import UserProjectList from "@/components/UserProjectList.vue"
+import SearchResultUser from "@/components/SearchResultUser.vue"
+import axios from 'axios'
+
+
 export default {
     props:['userName'],
     components:{
-      UserProjectList
+      UserProjectList,
+      SearchResultUser
     },
     data(){
       return{
         "isdefault":true,
         "search_input":'',
-        "search_subject":'Id'
+        "search_subject":'Id',
+        "show_search_result":false,
+        "search_result_data":''
       }
     },
     methods:{
@@ -53,6 +61,17 @@ export default {
       search_Now(){
         console.log(this.search_input,this.search_subject);
         this.isdefault = false;
+        // get_all_project && fetch :
+        const url_end_point = "http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input;
+        console.log(url_end_point);
+        axios.get("http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input).then(response =>{
+          // display result in result_component JSON.stringify(:
+          this.search_result_data = response.data['reponse_data'];
+          console.log(this.search_result_data);
+
+        }).catch(error => {
+          console.error(error);
+        });
       }
     }
 }
@@ -169,6 +188,7 @@ select option[value="Team"] {
   font-family: fantasy;
   color: #537895;
 }
+
 .side-item{
   grid-column: 2/ span 10 ;
   grid-row: 4/ span 5;

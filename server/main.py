@@ -48,6 +48,25 @@ def registration():
             return jsonify({"message": response_insert_user,'RegistrationState':registration_state})
 
 
+@my_app.route("/get-all-project/<subject>/<key>",methods=["GET"])
+@cross_origin()
+def fetch_data_endpoint(subject,key):
+    subject_list_enable = ['Id','User','Team']
+    message_response = ""
+    if subject in subject_list_enable:
+        # get connexion wit the dba :
+        if subject == 'User':
+            project_list = get_project_user(key)
+            print(project_list)
+        message_response = "fetch data from dba : get "+str(subject)+" with key :  "+str(key)
+    else:
+        message_response = "fetch data from dba : get subject not enable yet "
+    return jsonify({"message": message_response,"reponse_data":project_list})
+
+
+
+
+
 
 if __name__=="__main__":
     my_app.secret_key = 'super secret key'

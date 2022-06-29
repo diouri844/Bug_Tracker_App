@@ -55,12 +55,7 @@ body {
   padding-left: 10px;
   padding-right: 10px;
 }
-/*
-    <div class="col col-5" data-label="Payment Status">
-                    <button class=" btn btn-outline-info fa-solid fa-circle-info me-2"></button>
-                    <button class="btn btn-outline-light fa-solid fa-pen"></button>
-                </div>
-*/
+
 
 .responsive-table li {
     border-radius: 3px;
