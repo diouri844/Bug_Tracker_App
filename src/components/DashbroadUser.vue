@@ -6,14 +6,14 @@
        <span class="custom-element"> {{ userName }} </span>
     </h1>
      <div class="search-area">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <button class="search-btn-start" v-bind:onclick="search_Now"><i class="fa-solid fa-magnifying-glass"></i></button>
        <input type="text" placeholder="Search" class="input_search" v-model="search_input"/>
         <select name="type" id="search_global_subject" v-model="search_subject">
           <option class="option_item" value="Id" >Project Id</option>
           <option class="option_item" value="User" >User </option>
           <option class="option_item" value="Team">Team </option>
         </select>
-        <button class="search-btn-start" v-bind:onclick="search_Now"> search </button>
+        <!--<button class="search-btn-start" > search </button>-->
      </div>
     <div class="btn-group">
       <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
@@ -27,6 +27,7 @@
     </div>
     <UserProjectList class="side-item" v-show="isdefault"></UserProjectList>
     <SearchResultUser class="side-item" v-show="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
+    
   </div>
   
 </template>
@@ -62,9 +63,7 @@ export default {
         console.log(this.search_input,this.search_subject);
         this.isdefault = false;
         // get_all_project && fetch :
-        const url_end_point = "http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input;
-        console.log(url_end_point);
-        axios.get("http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input).then(response =>{
+         axios.get("http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input).then(response =>{
           // display result in result_component JSON.stringify(:
           this.search_result_data = response.data['reponse_data'];
           console.log(this.search_result_data);
@@ -89,7 +88,17 @@ export default {
   grid-template-columns:repeat(12,1fr);
   grid-template-rows:repeat(12,1fr);
 }
-
+.fa-magnifying-glass{
+  color:#fff;
+  font-size:18px;
+  padding:5px 5px;
+  border-radius:8px;
+  border:2px solid #fff;
+}
+.fa-magnifying-glass:hover{
+  background-color:#537895;
+  color:#fff;
+}
 .input_search{
     padding: 3px 8px;
     border:none;
@@ -113,12 +122,12 @@ export default {
   background:transparent;
   border-bottom:1px solid #fff;
   outline: none;
+  border-radius: 26px 5px 5px 6px;
 }
 
 select option[value="Id"] {
   background-color:#537895;
 }
-
 select option[value="User"] {
   background-color:#537895;
 }
@@ -129,15 +138,6 @@ select option[value="Team"] {
 .search-btn-start{
   display: flex;
   background:transparent;
-  padding: 3px 15px;
-  border:1px solid #fff;
-  color:#fff;
-  border-radius:18px;
-}
-/*CCCA0D */
-.search-btn-start:hover{
-  background-color:#537895;
-  color:#fff;
   border:none;
 }
 
@@ -147,7 +147,7 @@ select option[value="Team"] {
     justify-content: center;
     align-items: center;
     grid-row: 2/ span 3;
-    grid-column: 3/ span 7;
+    grid-column: 4/ span 7;
 }
 
 

@@ -3,18 +3,18 @@
         <ul class="responsive-table">
             <li class="table-header">
                 <div class="col col-1"> Id</div>
-                <div class="col col-2"><i class="fa-solid fa-user-tie"></i> Owner </div>
+                <div class="col  col-2"><i class="fa-solid fa-user-tie"></i> Creator </div>
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
             </li>
             <li class="table-row">
-                <div class="col col-1" data-label="Job Id">42235</div>
+                <div class="col col-1 col-1-data" data-label="Job Id">42235</div>
                 <div class="col col-2" data-label="Customer Name">John Doe</div>
                 <div class="col col-3 team-name" data-label="Amount" >Google-azur-closed-team</div>
                 <div class="col col-4" data-label="Payment Status">in deployment</div>
             </li>
             <li class="table-row">
-                <div class="col col-1" data-label="Job Id">42655</div>
+                <div class="col col-1 col-1-data" data-label="Job Id">42655</div>
                 <div class="col col-2" data-label="Customer Name">Chopen</div>
                 <div class="col col-3 team-name" data-label="Amount" >Py_charp</div>
                 <div class="col col-4" data-label="Payment Status">in deployment</div>
@@ -54,6 +54,7 @@ body {
   margin-right: auto;
   padding-left: 10px;
   padding-right: 10px;
+  margin-top:20px;
 }
 
 
@@ -68,7 +69,7 @@ body {
     color:#fff;/* #95A5A6;*/
     background:linear-gradient(to right,#E8126B,#0e0e0e);
     font-size: 14px;
-    text-transform: uppercase;
+    text-transform: capitalize;
     letter-spacing: 0.03em;
   }
 .responsive-table  .table-row {
@@ -79,12 +80,14 @@ body {
 .table-row:hover{
     box-shadow: 0px 0px 9px 0px #fff;
 }
-
+.fa-people-group{
+    font-size: 19px;
+}
 .team-name{
     background-color:#537895;
     color: #fff;
     width:auto;
-    text-align: center;
+    text-align: left;
     border-radius: 25px;
     padding:2px 1px;
     margin-right:25px;
@@ -93,18 +96,32 @@ body {
 
 .responsive-table .col-1 {
     flex-basis: 10%;
+    text-transform: uppercase;
 }
+.responsive-table .col-1-data:hover {
+    display:flex;
+    color:#eee;
+    cursor: pointer;
+    text-decoration: underline;
+    padding-bottom: 5px;
+    text-decoration-color:#eee;
+}
+
+
 .responsive-table .col-2 {
     flex-basis: 20%;
 }
+
+
 .responsive-table .col-3 {
     flex-basis: 25%;
+    text-align: center;
   }
+
 .responsive-table .col-4 {
     flex-basis: 25%;
 }
 
-  
 .table-header {
     display: none;
 }
