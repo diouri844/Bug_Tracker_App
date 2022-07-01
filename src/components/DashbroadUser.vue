@@ -13,7 +13,6 @@
           <option class="option_item" value="User" >User </option>
           <option class="option_item" value="Team">Team </option>
         </select>
-        <!--<button class="search-btn-start" > search </button>-->
      </div>
     <div class="btn-group">
       <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
@@ -25,7 +24,14 @@
         <li v-on:click="logout_to_home"><span class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i> Logout</span></li>
       </ul>
     </div>
-    <UserProjectList class="side-item" v-show="isdefault"></UserProjectList>
+    <UserProjectList class="side-item" v-show="isdefault" :User="this.userName"></UserProjectList>
+    <div v-show="isloading" class="loading_message">
+      <h1> Hum something loud while others stare .......  </h1>
+    </div>
+    <div v-if="isfailed" class="error_message">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <h1> there was and error understanding  the request   </h1>
+    </div>
     <SearchResultUser class="side-item" v-show="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
     
   </div>
@@ -40,7 +46,12 @@ import axios from 'axios'
 
 
 export default {
-    props:['userName'],
+    props:{
+      userName:{
+        type: String,
+        required: true
+      }
+    },
     components:{
       UserProjectList,
       SearchResultUser
@@ -51,7 +62,10 @@ export default {
         "search_input":'',
         "search_subject":'Id',
         "show_search_result":false,
-        "search_result_data":''
+        "search_result_data":'',
+        "isloading":false,
+        "isfailed":false,
+        "currentUserData":''
       }
     },
     methods:{
@@ -60,12 +74,25 @@ export default {
         this.$emit("tooglelogout");
       },
       search_Now(){
+        this.isloading = true;
         console.log(this.search_input,this.search_subject);
         this.isdefault = false;
+        this.show_search_result=false;
         // get_all_project && fetch :
          axios.get("http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input).then(response =>{
           // display result in result_component JSON.stringify(:
           this.search_result_data = response.data['reponse_data'];
+          this.isloading = false;
+          if(response.data.reponse_data.length===0){
+            //displaye error :
+            this.isfailed = true;
+            setTimeout(()=>{
+              this.isfailed = false; 
+              this.isdefault = true;  
+            },1500);
+          }else{
+            this.show_search_result=true;
+          }
           console.log(this.search_result_data);
 
         }).catch(error => {
@@ -148,6 +175,48 @@ select option[value="Team"] {
     align-items: center;
     grid-row: 2/ span 3;
     grid-column: 4/ span 7;
+}
+.loading_message{
+    width: 1000px;
+    padding:10px 10px;
+    margin-top:8px;
+    display:grid;
+    grid-template-columns: repeat(12,1fr);
+    grid-column: 3/ span 9;
+    text-align:left;
+    align-content: center;
+    color:#fff;
+}
+
+.error_message{
+  width: 1000px;
+    padding:10px 10px;
+    margin-top:8px;
+    display:grid;
+    grid-template-columns: repeat(12,1fr);
+    grid-column: 3/ span 9;
+    text-align:left;
+    align-content: center;
+    color:#ccc;
+}
+
+.error_message h1{
+  grid-column: 2/ span 9;
+  display: flex;
+  font-size:20px;
+  text-transform: capitalize;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.error_message .fa-circle-exclamation{
+  font-size:20px;
+  margin-left:8px;
+}
+
+.loading_message h1{
+  grid-column: 2/ span 9;
+  display: flex;
+  font-size:20px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 

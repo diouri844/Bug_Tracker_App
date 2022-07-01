@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-show="currentuserHasProjects" class="container">
         <ul class="responsive-table">
             <li class="table-header">
                 <div class="col col-1"> Id</div>
@@ -7,24 +7,62 @@
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
             </li>
-            <li class="table-row">
-                <div class="col col-1 col-1-data" data-label="Job Id">42235</div>
-                <div class="col col-2" data-label="Customer Name">John Doe</div>
-                <div class="col col-3 team-name" data-label="Amount" >Google-azur-closed-team</div>
-                <div class="col col-4" data-label="Payment Status">in deployment</div>
-            </li>
-            <li class="table-row">
-                <div class="col col-1 col-1-data" data-label="Job Id">42655</div>
-                <div class="col col-2" data-label="Customer Name">Chopen</div>
-                <div class="col col-3 team-name" data-label="Amount" >Py_charp</div>
-                <div class="col col-4" data-label="Payment Status">in deployment</div>
+            <li v-for="(item,index) in Data" :key="index" class="table-row">
+                <div class="col col-1 col-1-data" data-label="Job Id">{{ item.Name }}</div>
+                <div class="col col-2" data-label="Customer Name">{{ item.Owner }}</div>
+                <div class="col col-3 team-name" data-label="Amount" >{{ item.Team }}</div>
+                <div class="col col-4" data-label="Payment Status">{{ item.State }}</div>
             </li>
         </ul>
-</div>
+    </div>
+    
 </template>
 
 <script>
+import axios from "axios";
+    /*
+    <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
+        <h1 class="handler-message" > No project yet :) .......... </h1>
+    </div>
+    
+    
+    */
     export default{
+    props:{
+      User:{
+        type: String,
+        required: true
+      }
+    },
+    mounted(){
+        console.log("On mounted ");
+        console.log(this.User);
+        //fecth data from endpoint : 
+        axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
+        .then(response =>{
+          console.log(response);
+          if(response.data.reponse_data.length===0){
+            this.currentuserHasProjects = false;
+            this.dontcurrentuserHasProjects = true;
+            console.log("no project yet ");
+          }else{
+            this.currentuserHasProjects = true;
+            this.dontcurrentuserHasProjects = false;
+            this.Data = response.data.reponse_data;
+          }
+          
+        })
+        .catch(error =>{
+          console.error(error);
+        });
+    },
+    data(){
+        return {
+            "Data":'',
+            "currentuserHasProjects":false,
+            "dontcurrentuserHasProjects":false
+        }
+    },
     methode:{
         click_table_row(){
             console.log("row click detected ");
@@ -55,6 +93,26 @@ body {
   padding-left: 10px;
   padding-right: 10px;
   margin-top:20px;
+}
+
+.No-project-Handler{
+    width: 1000px;
+    padding:10px 10px;
+    margin-top:8px;
+    display:grid;
+    grid-template-columns: repeat(12,1fr);
+    grid-column: 3/ span 9;
+    text-align:left;
+    align-content: center;
+    color:#fff;
+}
+
+.handler-message{
+    grid-column: 2/ span 9;
+  display: flex;
+  font-size:20px;
+  text-transform: capitalize;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 
@@ -95,7 +153,7 @@ body {
 
 
 .responsive-table .col-1 {
-    flex-basis: 10%;
+    flex-basis: 25%;
     text-transform: uppercase;
 }
 .responsive-table .col-1-data:hover {

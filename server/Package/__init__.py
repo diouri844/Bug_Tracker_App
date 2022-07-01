@@ -89,3 +89,15 @@ def get_project_user(user_target):
     ))
     # that return a list of project :
     return project_result
+
+
+def get_project_team(team_target):
+    # define cofig vars : 
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    
+    return

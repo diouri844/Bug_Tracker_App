@@ -1,5 +1,4 @@
 <template >
-        
         <template  v-for="(item,index) in Data" :key="index">
             <div class="container">
                 <div class="header">
