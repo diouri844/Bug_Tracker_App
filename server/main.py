@@ -60,9 +60,8 @@ def fetch_data_endpoint(subject,key):
             project_list = get_project_user(key)
             print(project_list)
         if subject == 'Team':
-            #project_list = get_project_team(key)
-            #print(project_list)
-            print("subject")
+            project_list = get_project_team(key)
+            print(project_list)
         message_response = "fetch data from dba : get "+str(subject)+" with key :  "+str(key)
     else:
         message_response = "fetch data from dba : get subject not enable yet "

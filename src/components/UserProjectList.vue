@@ -14,19 +14,16 @@
                 <div class="col col-4" data-label="Payment Status">{{ item.State }}</div>
             </li>
         </ul>
+        <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
+          <h1 class="handler-message" > No project yet :) .......... </h1>
+        </div>
+    
     </div>
     
 </template>
 
 <script>
 import axios from "axios";
-    /*
-    <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
-        <h1 class="handler-message" > No project yet :) .......... </h1>
-    </div>
-    
-    
-    */
     export default{
     props:{
       User:{
@@ -35,8 +32,6 @@ import axios from "axios";
       }
     },
     mounted(){
-        console.log("On mounted ");
-        console.log(this.User);
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
@@ -44,13 +39,11 @@ import axios from "axios";
           if(response.data.reponse_data.length===0){
             this.currentuserHasProjects = false;
             this.dontcurrentuserHasProjects = true;
-            console.log("no project yet ");
           }else{
             this.currentuserHasProjects = true;
             this.dontcurrentuserHasProjects = false;
             this.Data = response.data.reponse_data;
           }
-          
         })
         .catch(error =>{
           console.error(error);

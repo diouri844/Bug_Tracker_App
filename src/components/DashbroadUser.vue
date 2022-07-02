@@ -29,11 +29,11 @@
       <h1> Hum something loud while others stare .......  </h1>
     </div>
     <div v-if="isfailed" class="error_message">
-      <i class="fa-solid fa-circle-exclamation"></i>
-      <h1> there was and error understanding  the request   </h1>
+      <h1> No Results Found   </h1>
+      <i class="fa-solid fa-face-sad-tear"></i>
     </div>
-    <SearchResultUser class="side-item" v-show="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
-    
+    <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
+    <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
   </div>
   
 </template>
@@ -42,6 +42,7 @@
 // separt dashbroad to many components : teams list/current user projects-engagement:
 import UserProjectList from "@/components/UserProjectList.vue"
 import SearchResultUser from "@/components/SearchResultUser.vue"
+import SearchResultTeam from "@/components/SearchResultTeam.vue"
 import axios from 'axios'
 
 
@@ -54,7 +55,8 @@ export default {
     },
     components:{
       UserProjectList,
-      SearchResultUser
+      SearchResultUser,
+      SearchResultTeam
     },
     data(){
       return{
@@ -62,6 +64,7 @@ export default {
         "search_input":'',
         "search_subject":'Id',
         "show_search_result":false,
+        "show_search_team_result":false,
         "search_result_data":'',
         "isloading":false,
         "isfailed":false,
@@ -73,8 +76,18 @@ export default {
         //send custom-event to main component :
         this.$emit("tooglelogout");
       },
+      redirect_to_home(){
+          this.show_search_result = false;
+          this.isdefault = true;
+      },
+      redirect_to_home_form_team(){
+        this.show_search_team_result = false;
+        this.isdefault = true;
+      },
       search_Now(){
         this.isloading = true;
+        this.show_search_result = false;
+        this.show_search_team_result= false;
         console.log(this.search_input,this.search_subject);
         this.isdefault = false;
         this.show_search_result=false;
@@ -91,7 +104,13 @@ export default {
               this.isdefault = true;  
             },1500);
           }else{
-            this.show_search_result=true;
+            //check search subject :
+            if(this.search_subject==="User"){
+              this.show_search_result=true;
+            }
+            if(this.search_subject==="Team"){
+              this.show_search_team_result = true;
+            }
           }
           console.log(this.search_result_data);
 
@@ -201,15 +220,15 @@ select option[value="Team"] {
 }
 
 .error_message h1{
-  grid-column: 2/ span 9;
+  grid-column: 3/ span 2;
   display: flex;
   font-size:20px;
   text-transform: capitalize;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-.error_message .fa-circle-exclamation{
+.error_message .fa-face-sad-tear{
   font-size:20px;
-  margin-left:8px;
+  margin-left:10px;
 }
 
 .loading_message h1{

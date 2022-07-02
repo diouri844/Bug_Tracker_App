@@ -1,25 +1,25 @@
 <template >
-        <button v-show="display_close_btn" type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_search_area"></button>
+        <button v-if="display_close_btn" type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_search_area_team"></button>
         <template  v-for="(item,index) in Data" :key="index">
             <div v-show="display_search_area"  class="container">
                 <div class="header">
-                    <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.Name }}</h5>
-                    <h6 class="project-contributors_number"> {{ item.Contributors.length }} contributors </h6>
+                    <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.TeamName }}</h5>
+                    <h6 class="teammanager">  {{ item.TeamManager }} </h6>
+                    <h6 class="project-contributors_number"> {{ item.TeamGroup.length }} membre </h6>
                 </div>
                 <div class="body">
-                    <p class="description">
-                        {{ item.Discription }}
-                    </p>
-                </div>
-                <div class="footer">
-                    <h7 class="project-start-date"> {{ item.Sdate }}</h7>
-                    <h7 class="project-state"> {{ item.State }}</h7>
-                    <h7 class="project-end-date"> {{ item.Edate }}</h7>
-            </div>                
+                    <ul class="teamMember" v-for="(member,index_member) in item.TeamGroup" :key="index_member">
+                        <li class="member-item"> {{ member }}</li>
+                    </ul>
+                    <ul class="teamProject" v-for="(project,index_project) in item.TeamProject" :key="index_project">
+                        <li class="project-item"> {{ project }}</li>
+                    </ul>
+                </div>                
             </div>
         </template>
         
 </template>
+
 
 
 <script scoped>
@@ -33,18 +33,17 @@ export default {
     },
     mounted(){
         this.display_search_area = true;
-        this.display_close_btn = true;
+        this.display_close_btn = this.display_search_area;
     }
     ,methods:{
-    close_search_area(){
+    close_search_area_team(){
         this.display_search_area = false;
         //send custom event to the main component:
-        this.$emit("display_deafault")
+        this.$emit("display_deafault_team")
     }
 }
 }
 </script>
-
 
 <style scoped>
 .container {

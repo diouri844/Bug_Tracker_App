@@ -99,5 +99,14 @@ def get_project_team(team_target):
     # get connexion with atlas mongodb :
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
-    
-    return
+    results = list(my_db.Team.find({'$or':[
+        {
+            "TeamName":team_target
+        },
+        {
+            "TeamManager":team_target
+        }]
+        },{
+            '_id':0
+        }))
+    return results
