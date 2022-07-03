@@ -3,16 +3,23 @@
         <template  v-for="(item,index) in Data" :key="index">
             <div v-show="display_search_area"  class="container">
                 <div class="header">
-                    <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.TeamName }}</h5>
+                    <h5 class="project-title"><i class="fa-solid fa-users"></i> {{ item.TeamName }}</h5>
                     <h6 class="teammanager">  {{ item.TeamManager }} </h6>
                     <h6 class="project-contributors_number"> {{ item.TeamGroup.length }} membre </h6>
                 </div>
                 <div class="body">
-                    <ul class="teamMember" v-for="(member,index_member) in item.TeamGroup" :key="index_member">
-                        <li class="member-item"> {{ member }}</li>
+                    <a class="btn-display" data-bs-toggle="collapse" href="#collapseUsers" role="button" aria-expanded="false" aria-controls="collapseUsers">
+                        <i class="fa-solid fa-list"></i> Users <span class="number"> ({{ item.TeamGroup.length }})</span>
+                    </a>
+                    <ul class="teamMember" id="collapseUsers" v-for="(member,index_member) in item.TeamGroup" :key="index_member">
+                        <li class="member-item"><i class="fa-solid fa-user"></i> {{ member }}</li>
                     </ul>
-                    <ul class="teamProject" v-for="(project,index_project) in item.TeamProject" :key="index_project">
-                        <li class="project-item"> {{ project }}</li>
+                    <a class="btn-display" data-bs-toggle="collapse" href="#collapseProject" role="button" aria-expanded="false" aria-controls="collapseProject">
+                        <i class="fa-solid fa-list"></i> Projects <span class="number"> ({{ item.TeamProject.length }})</span>
+                    </a>
+                    <ul class="teamProject" id="collapseProject" v-for="(project,index_project) in item.TeamProject" :key="index_project">
+                        <li class="project-item"><i class="fa-solid fa-folder"></i> {{ project }}
+                         <span :class="{ 'progress': isProgress , 'stoped': isStoped}" :currentState='item.ProjectState[index_project]'>{{ item.ProjectState[index_project] }} </span> </li>
                     </ul>
                 </div>                
             </div>
@@ -28,12 +35,22 @@ export default {
     data(){
         return{
             "display_search_area":false,
-            "display_close_btn":false
+            "display_close_btn":false,
+            "isProgress":false,
+            "isStoped":false,
+            "currentState":''
         }
     },
     mounted(){
         this.display_search_area = true;
         this.display_close_btn = this.display_search_area;
+        if(this.currentState==="In progression"){
+            this.isProgress = true;
+        }
+        if(this.currentState==="On hold"){
+            this.isStoped = true;
+        }
+        console.log(this.currentState);
     }
     ,methods:{
     close_search_area_team(){
@@ -64,12 +81,53 @@ export default {
     background-color:#202131;
     border-radius: 15px;
     outline: none;
-
+}
+.progress{
+    background-color:green;
+}
+.stoped{
+    background-color:yellow;
 }
 
-.fa-folder{
-    color:orange;
+
+.btn-display{
+    color:#eee;
+    max-width:250px;
+    outline: none;
+    text-decoration: none;
+    font-size: 20px;
+    margin-left:15px;
+    margin-bottom:10px;
 }
+
+.fa-users{
+    margin-left:3px;
+    color:#1ecbe1;
+}
+
+.member-item {
+    color:#eee;
+    list-style: none;
+}
+
+.state{
+    margin-left:20%;
+    text-align: center;
+    padding: 8px 8px;
+    font-size: 14px;
+    color:#fff;
+    border-radius:15px;
+}
+
+
+
+
+
+.teammanager{
+    color:#fff;
+}
+
+
 
 .header{
     display: grid;
@@ -79,50 +137,33 @@ export default {
     justify-content: space-between;
 }
 .project-title{
+    margin-left:5px;
     background: -webkit-linear-gradient( #eee,#fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: capitalize;
     grid-column: span 5;
 }
-.project-contributors_number{
+.project-contributors_number,.number{
     text-transform: capitalize;
     color:gray;
     grid-column: 8/ span 5;
     font-size:13px;
 }
-.description{
-    background-color:#202131;
-    padding:10px 10px;
-    border-radius: 15px;
-    color:#fff;
-    text-transform: capitalize;
-    text-justify: newspaper;
-    font-family: monospace;
-    font-size: 15px;
+.body{
+    display: grid;
+    justify-content: space-between1;
 }
 
-.footer{
-    display:flex;
-    justify-content: space-between;
+.teamMember{
+    
 }
-.footer .project-start-date{
-    color:#00ff0d;
-    font-family: Times;
-    font-size: 15px;
-    text-decoration: underline;
-    margin-right:5%;
+.teamProject{
+    
 }
-.footer .project-state{
-    color:#c6d9dc;
-    font-family:-apple-system;
-    font-size: 15px;
-    margin-right:5%;
-}
-.footer .project-end-date{
-    color:#fff;
-    font-family: Times;
-    font-size: 15px;
+.project-item{
+    color:#eee;
+    list-style: none;
 }
 
 </style>
