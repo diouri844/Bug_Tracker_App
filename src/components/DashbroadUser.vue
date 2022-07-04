@@ -34,6 +34,7 @@
     </div>
     <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
     <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
+    <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result" v-bind:Data="search_result_data"></SearchResultId>
   </div>
   
 </template>
@@ -43,6 +44,7 @@
 import UserProjectList from "@/components/UserProjectList.vue"
 import SearchResultUser from "@/components/SearchResultUser.vue"
 import SearchResultTeam from "@/components/SearchResultTeam.vue"
+import SearchResultId from "@/components/SearchResultId.vue"
 import axios from 'axios'
 
 
@@ -56,7 +58,8 @@ export default {
     components:{
       UserProjectList,
       SearchResultUser,
-      SearchResultTeam
+      SearchResultTeam,
+      SearchResultId
     },
     data(){
       return{
@@ -65,6 +68,7 @@ export default {
         "search_subject":'Id',
         "show_search_result":false,
         "show_search_team_result":false,
+        "show_search_Id_result":false,
         "search_result_data":'',
         "isloading":false,
         "isfailed":false,
@@ -84,14 +88,28 @@ export default {
         this.show_search_team_result = false;
         this.isdefault = true;
       },
+      redirect_to_home_from_id(){
+        this.show_search_Id_result = false;
+        this.isdefault = true;
+      },
       search_Now(){
-        this.isloading = true;
-        this.show_search_result = false;
-        this.show_search_team_result= false;
-        console.log(this.search_input,this.search_subject);
-        this.isdefault = false;
-        this.show_search_result=false;
-        // get_all_project && fetch :
+        //check if entry is failed :
+        if(this.search_input.length===0  || /\s/.test(this.search_input)){
+          this.$notify({
+                        type:"error",
+                        title: "Search Error ",
+                        text: "Invalid search input :)",
+                        position:"bottom right"
+                    });
+        }else{
+          this.isloading = true;
+          this.show_search_result = false;
+          this.show_search_team_result= false;
+          this.show_search_Id_result = false;
+          console.log(this.search_input,this.search_subject);
+          this.isdefault = false;
+          this.show_search_result=false;
+          // get_all_project && fetch :
          axios.get("http://127.0.0.1:5000/get-all-project/"+this.search_subject+"/"+this.search_input).then(response =>{
           // display result in result_component JSON.stringify(:
           this.search_result_data = response.data['reponse_data'];
@@ -111,12 +129,16 @@ export default {
             if(this.search_subject==="Team"){
               this.show_search_team_result = true;
             }
+            if(this.search_subject==="Id"){
+              this.show_search_Id_result = true;
+            }
           }
           console.log(this.search_result_data);
 
         }).catch(error => {
           console.error(error);
         });
+        }
       }
     }
 }
@@ -254,6 +276,7 @@ select option[value="Team"] {
 .dropdown-item{
   color:#fff;
   text-align: center;
+  cursor:pointer;
 }
 
 .dropdown-item:hover{

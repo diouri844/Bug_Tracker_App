@@ -1,12 +1,11 @@
-<template >
-        <button v-show="display_close_btn" type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_search_area"></button>
-        <template  v-for="(item,index) in Data" :key="index">
-            <div v-show="display_search_area"  class="container">
+<template>
+    <button type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_result_area"></button>
+    <template  v-for="(item,i) in Data" :key="i">
+            <div class="container">
                 <div class="header">
+                    <h6 class="project-start-date"> {{ item.Sdate }}</h6>
                     <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.Name }}</h5>
-                    <h6 class="project-contributors_number" 
-                    @click="show_liste_contributors(item)"
-                    > {{ item.Contributors.length }} contributors </h6>
+                    <h6 class="project-Owner"> By  {{ item.Owner }}  </h6>
                 </div>
                 <div class="body">
                     <p class="description">
@@ -14,55 +13,27 @@
                     </p>
                 </div>
                 <div class="footer">
-                    <h7 class="project-start-date"> {{ item.Sdate }}</h7>
                     <h7 class="project-state"> {{ item.State }}</h7>
-                    <h7 class="project-end-date"> {{ item.Edate }}</h7>
+                    <h7 class="project-end-date"> {{ item.Contributors.length }}</h7>
             </div>                
             </div>
         </template>
-    <ProjectContributorsListe 
-        class=""
-        v-show="display_contributors"
-        v-bind:Project="projectTarget"
-        @CloseModal="CloseModaleEvent"
-        ></ProjectContributorsListe>         
 </template>
 
 
-<script scoped>
-import ProjectContributorsListe from "@/components/ProjectContributorsListe.vue"
+<script>
 export default {
     props: ["Data"],
-    components: {
-        ProjectContributorsListe
-    },
     data(){
         return{
-            "display_search_area":false,
-            "display_close_btn":false,
-            "display_contributors":false,
-            "projectTarget":''
+
         }
     },
-    mounted(){
-        this.display_search_area = true;
-        this.display_close_btn = true;
+    methods:{
+        close_result_area(){
+            this.$emit("display_deafault_id");
+        }
     }
-    ,methods:{
-    close_search_area(){
-        this.display_search_area = false;
-        //send custom event to the main component:
-        this.$emit("display_deafault")
-    },
-    show_liste_contributors(item ){
-        this.projectTarget = item.Contributors;
-        this.display_contributors = true;
-        console.log(" detect click .......");
-    },
-    CloseModaleEvent(){
-        this.display_contributors = false;
-    }
-}
 }
 </script>
 
@@ -96,6 +67,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(12,1fr);
     margin-bottom: 10px;
+    color:#eee;
     display:flex;
     justify-content: space-between;
 }
@@ -146,5 +118,6 @@ export default {
     font-family: Times;
     font-size: 15px;
 }
+
 
 </style>

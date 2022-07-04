@@ -56,6 +56,9 @@ def fetch_data_endpoint(subject,key):
     message_response = ""
     if subject in subject_list_enable:
         # get connexion wit the dba :
+        if subject == 'Id':
+            project_list = get_project_Id(key)
+            print(project_list)
         if subject == 'User':
             project_list = get_project_user(key)
             print(project_list)

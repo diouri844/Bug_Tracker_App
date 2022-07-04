@@ -7,6 +7,7 @@
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
             </li>
+                
             <li v-for="(item,index) in Data" :key="index" class="table-row">
                 <div class="col col-1 col-1-data" data-label="Job Id">{{ item.Name }}</div>
                 <div class="col col-2" data-label="Customer Name">{{ item.Owner }}</div>
@@ -14,15 +15,17 @@
                 <div class="col col-4" data-label="Payment Status">{{ item.State }}</div>
             </li>
         </ul>
-        <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
-          <h1 class="handler-message" > No project yet :) .......... </h1>
-        </div>
-    
+          <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
+            <vuetyped :strings="['No project yet :).......... ']" :typeSpeed="70" class="typing-comp">
+              <h1 class="typing handler-message"> </h1>
+            </vuetyped>
+            <!--<Transition name="bounce" apear><h1 class="handler-message" >  </h1>-->
+          </div>
     </div>
-    
 </template>
 
 <script>
+import vuetyped from "vue3typed/libs/typed";
 import axios from "axios";
     export default{
     props:{
@@ -31,11 +34,14 @@ import axios from "axios";
         required: true
       }
     },
+    components: {
+      vuetyped
+    },
     mounted(){
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
-          console.log(response);
+          console.log(response.data.reponse_data);
           if(response.data.reponse_data.length===0){
             this.currentuserHasProjects = false;
             this.dontcurrentuserHasProjects = true;
@@ -47,6 +53,7 @@ import axios from "axios";
         })
         .catch(error =>{
           console.error(error);
+          this.dontcurrentuserHasProjects = true;
         });
     },
     data(){
@@ -66,6 +73,29 @@ import axios from "axios";
 
 
 <style scoped>
+.bounce-enter-active {
+        animation: bounce-in 1.5s;
+    }
+    .bounce-leave-active {
+        animation: bounce-in 0.01s reverse;
+    }
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+
+
+
+
+
 .content-side{
     margin:0;
     padding:5px 15px;
@@ -99,9 +129,13 @@ body {
     align-content: center;
     color:#fff;
 }
-
+.typing-comp{
+  grid-column: 2/ span 9;
+  display:flex;
+  width:500px;
+}
 .handler-message{
-    grid-column: 2/ span 9;
+  grid-column: 2/ span 9;
   display: flex;
   font-size:20px;
   text-transform: capitalize;

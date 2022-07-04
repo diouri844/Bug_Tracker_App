@@ -110,3 +110,19 @@ def get_project_team(team_target):
             '_id':0
         }))
     return results
+
+def get_project_Id(key):
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    #get project from dba by name :
+    results = list(my_db.Project.find({
+        'Name':key
+    },{
+        '_id':0
+    }
+    ))
+    return results

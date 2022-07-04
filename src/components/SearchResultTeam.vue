@@ -19,7 +19,7 @@
                     </a>
                     <ul class="teamProject" id="collapseProject" v-for="(project,index_project) in item.TeamProject" :key="index_project">
                         <li class="project-item"><i class="fa-solid fa-folder"></i> {{ project }}
-                         <span :class="{ 'progress': isProgress , 'stoped': isStoped}" :currentState='item.ProjectState[index_project]'>{{ item.ProjectState[index_project] }} </span> </li>
+                         <span class="state" >{{ item.ProjectState[index_project] }} </span> </li>
                     </ul>
                 </div>                
             </div>
@@ -36,21 +36,11 @@ export default {
         return{
             "display_search_area":false,
             "display_close_btn":false,
-            "isProgress":false,
-            "isStoped":false,
-            "currentState":''
         }
     },
     mounted(){
         this.display_search_area = true;
         this.display_close_btn = this.display_search_area;
-        if(this.currentState==="In progression"){
-            this.isProgress = true;
-        }
-        if(this.currentState==="On hold"){
-            this.isStoped = true;
-        }
-        console.log(this.currentState);
     }
     ,methods:{
     close_search_area_team(){
@@ -115,8 +105,8 @@ export default {
     text-align: center;
     padding: 8px 8px;
     font-size: 14px;
-    color:#fff;
-    border-radius:15px;
+    color:#eee;
+    border-bottom: 1px solid #1ecbe1;
 }
 
 

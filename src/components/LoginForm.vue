@@ -62,8 +62,7 @@ export default {
                         position:"bottom right"
                     });
                     }
-                    
-                }).catsh(error => {
+                }).catch(error => {
                     console.err(error);
                 });
             }else{
