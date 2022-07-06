@@ -35,8 +35,8 @@
     <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
     <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
     <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result" v-bind:Data="search_result_data"></SearchResultId>
+    <FoterTool v-show="isdefault"></FoterTool>
   </div>
-  
 </template>
 
 <script>
@@ -45,6 +45,7 @@ import UserProjectList from "@/components/UserProjectList.vue"
 import SearchResultUser from "@/components/SearchResultUser.vue"
 import SearchResultTeam from "@/components/SearchResultTeam.vue"
 import SearchResultId from "@/components/SearchResultId.vue"
+import FoterTool from "@/components/FoterTool.vue"
 import axios from 'axios'
 
 
@@ -59,7 +60,8 @@ export default {
       UserProjectList,
       SearchResultUser,
       SearchResultTeam,
-      SearchResultId
+      SearchResultId,
+      FoterTool
     },
     data(){
       return{
