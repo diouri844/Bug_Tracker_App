@@ -35,7 +35,13 @@
     <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
     <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
     <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result" v-bind:Data="search_result_data"></SearchResultId>
-    <FoterTool v-show="isdefault"></FoterTool>
+    <FoterTool v-if="isdefault"
+    @addProject="addNewProject = true"
+    @addContrib="invitContrib = true"
+    @UpdateProject="updateProject = true"
+    @addTeam="addTeam = true"
+    ></FoterTool>
+    <CreateProject v-show="addNewProject" @closeModal="addNewProject = false"></CreateProject>
   </div>
 </template>
 
@@ -46,6 +52,7 @@ import SearchResultUser from "@/components/SearchResultUser.vue"
 import SearchResultTeam from "@/components/SearchResultTeam.vue"
 import SearchResultId from "@/components/SearchResultId.vue"
 import FoterTool from "@/components/FoterTool.vue"
+import CreateProject from "@/components/CreateProject.vue"
 import axios from 'axios'
 
 
@@ -61,7 +68,8 @@ export default {
       SearchResultUser,
       SearchResultTeam,
       SearchResultId,
-      FoterTool
+      FoterTool,
+      CreateProject
     },
     data(){
       return{
@@ -74,6 +82,10 @@ export default {
         "search_result_data":'',
         "isloading":false,
         "isfailed":false,
+        "addNewProject":false,
+        "invitContrib":false,
+        "updateProject":false,
+        "addTeam":false,
         "currentUserData":''
       }
     },
