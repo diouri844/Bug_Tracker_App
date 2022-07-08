@@ -28,11 +28,20 @@
             class="btn btn-sm btn-outline-danger item">
             <i class="fa-solid fa-people-group"></i>
         </button>
+        <button
+            @mouseenter="hover5 = true"
+            @mouseleave="hover5 = false"
+            @click="sendCustomNotifevent"
+            class="btn btn-sm btn-outline-secondary item">
+            <i class="fa-solid fa-bell"></i>
+        </button>
+            
     </div>
     <h6 class="details-msg-1" v-show="hover1">{{ msg1 }}</h6>
     <h6 class="details-msg-2" v-show="hover2">{{ msg2 }}</h6>
     <h6 class="details-msg-3" v-show="hover3">{{ msg3 }}</h6>
     <h6 class="details-msg-4" v-show="hover4">{{ msg4 }}</h6>
+    <h6 class="details-msg-5" v-show="hover5">{{ msg5 }}</h6>
 </template>
 
 
@@ -45,10 +54,12 @@ export default {
             "hover2":false,
             "hover3":false,
             "hover4":false,
+            "hover5":false,
             "msg1":'create new project',
             "msg2":'invite contributor',
             "msg3":'update project info',
-            "msg4":'create new team'
+            "msg4":'create new team',
+            "msg5":' your notifications'
         }
     },
     methods:{
@@ -100,7 +111,7 @@ export default {
     margin-left:5px;
     margin-right:5px;
 }
-.details-msg-1,.details-msg-2 ,.details-msg-3, .details-msg-4{
+.details-msg-1,.details-msg-2 ,.details-msg-3, .details-msg-4, .details-msg-5{
     color:#ececec;
     margin:15px auto;
     position: fixed;

@@ -3,20 +3,39 @@
         <div class="modal-overlay open-modal">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h3 class="header"><i class="fa-solid fa-plus"></i> Create New Project  </h3>
+                    <h3 class="header">
+                        <i class="fa-solid fa-plus"></i>
+                        {{ headermessage }}  
+                    </h3>
                     <button type="button" class="btn-close btn-light bg-light" 
                     aria-label="Close"
                     @click="CloseMe"></button>
                 </div>
-                <div class="modal-body">
-                        <input type="text" placeholder="Project Name" class="projectname" v-model="projectname">
-                        <textarea placeholder="describe your project " cols="50" rows="5" class="description"></textarea>
-                        <label for="startedDate"> Start date </label>
-                        <input type="date" class="Date" id="startedDate">
-                        <label for="endedDate"> Expected end  date </label>
-                        <input type="date" class="Date" id="endedDate">
-                </div>
-                <button class="btn btn-outline-info">
+                <transition name="nested" appear>
+                    <div v-if="step1" class="modal-body">
+                            <input type="text" placeholder="Project Name" class="projectname" v-model="projectname">
+                            <textarea v-model="projectdescrib" placeholder="describe your project " cols="50" rows="5" class="description"></textarea>
+                            <label for="startedDate"> Start date </label>
+                            <input type="date" class="Date" id="startedDate" v-model="projectsdate">
+                            <label for="endedDate"> Expected end  date </label>
+                            <input type="date" class="Date" id="endedDate" v-model="projectedate">
+                    </div>
+                </transition>
+                <transition name="nested" appear>
+                    <div v-if="step2" class="modal-body">
+                            <div class="search">
+                                <input type="text" placeholder="Search for team" class="projectteam" v-model="projectteam">
+                                <button class="btn-search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
+                    </div>
+                </transition>
+                <button 
+                class="btn"
+                @click="switchtostep2"
+                v-show="step1"
+                >
                     Next
                     <i class="fa-solid fa-circle-arrow-right"></i>
                 </button>
@@ -27,9 +46,64 @@
 
 <script>
 export default {
+    data(){
+        return{
+            "headermessage":"Create New Project",
+            "step1":Boolean,
+            "step2":Boolean,
+            "projectname":'',
+            "projectdescrib":'',
+            "projectsdate":'',
+            "projectedate":''
+        }
+    },
+    mounted(){
+        this.step1= true;
+        this.step2 = false;
+    },
     methods:{
         CloseMe(){
             this.$emit("closeModal");
+        },
+        switchtostep2(){
+            let counter = 0;
+            let err_message = '';
+            if(this.projectname.length === 0 ||  /\s/.test(this.projectname)){
+                err_message = "Project name cannot be empty or contain spaces";
+                counter = 1;
+                console.log(err_message,counter);
+            }
+            if(this.projectdescrib.length === 0 || this.projectdescrib.length < 10 ){
+                err_message = "The project description may not be empty or lower than 10";
+                counter = 2;
+            }
+            if(this.projectsdate.length === 0 || new Date(this.projectsdate) < new Date().getDate()-1){
+                err_message = "The project start date cannot be empty or earlier than present";
+                counter = 3;
+            }
+            if(this.projectedate.length > 0 && new Date(this.projectedate)< new Date(this.projectsdate)){
+                err_message = "The project completion date may not be earlier than the effective date.";
+                counter = 4;
+            }
+
+            if(counter === 0){
+                this.step1 = false;
+                this.step2 = true;
+                this.headermessage = "add team ";
+            }else{
+                this.$notify({
+                        type:"error",
+                        title: "Create Project Error ",
+                        text: err_message,
+                        position:"bottom right"
+                    });
+            }
+            
+            console.log(this.projectname,
+                        this.projectdescrib,
+                        this.projectsdate,
+                        this.projectedate);
+            
         }
     }
 }
@@ -39,6 +113,21 @@ export default {
 
 
 <style scoped>
+/* rules that target nested elements */
+.nested-enter-active,
+.nested-leave-active {
+  transition: all 3.5s ease-in-out;
+}
+
+.nested-enter-from,
+.nested-leave-to {
+  /*transform: translateX(500px);*/
+  opacity: 0;
+}
+
+
+
+
  .bounce-enter-active {
         animation: bounce-in 1.5s;
     }
@@ -107,7 +196,7 @@ export default {
     width:80%;
     place-items: left;
 }
-.projectname , .description, .Date{
+.projectname , .description, .Date, .projectteam{
     margin-bottom:10px;
     padding: 5px 10px;
     outline: none;
@@ -132,6 +221,24 @@ label{
     text-align: right;
     align-items: center;
     margin: 0px 0px 0px auto;
+    color:#ccc;
+    border-color: #ccc;
+    outline:none;
+}
+.btn:hover{
+    background-color:#ccc;
+    color:#fff;
+    border-color: #fff;
+}
+.btn-search:hover{
+    color:#fff;
+    border-bottom: 1px solid #fff;
+    border-color: #fff;
+}
+.btn-search{
+    color:#ccc;
+    border:none;
+    background: transparent;
 }
 </style>
 

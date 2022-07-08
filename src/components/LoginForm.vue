@@ -63,7 +63,7 @@ export default {
                     });
                     }
                 }).catch(error => {
-                    console.err(error);
+                    console.error(error);
                 });
             }else{
                 console.log(this.checked_counter);
