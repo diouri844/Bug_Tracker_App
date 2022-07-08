@@ -41,7 +41,7 @@
     @UpdateProject="updateProject = true"
     @addTeam="addTeam = true"
     ></FoterTool>
-    <CreateProject v-show="addNewProject" @closeModal="addNewProject = false"></CreateProject>
+    <CreateProject v-bind:User="userName" v-show="addNewProject" @closeModal="addNewProject = false"></CreateProject>
   </div>
 </template>
 
