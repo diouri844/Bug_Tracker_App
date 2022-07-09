@@ -7,13 +7,14 @@
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
             </li>
-                
+            <perfect-scrollbar tag="div" class="body_tab">
             <li v-for="(item,index) in Data" :key="index" class="table-row">
                 <div class="col col-1 col-1-data" data-label="Job Id">{{ item.Name }}</div>
                 <div class="col col-2" data-label="Customer Name">{{ item.Owner }}</div>
                 <div class="col col-3 team-name" data-label="Amount" >{{ item.Team }}</div>
                 <div class="col col-4" data-label="Payment Status">{{ item.State }}</div>
             </li>
+            </perfect-scrollbar>
         </ul>
           <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
             <vuetyped :strings="['No project yet :).......... ']" :typeSpeed="70" class="typing-comp">
@@ -116,6 +117,7 @@ body {
   padding-left: 10px;
   padding-right: 10px;
   margin-top:20px;
+  height: auto;
 }
 
 .No-project-Handler{
@@ -142,7 +144,9 @@ body {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-
+.body_tab{
+  height:330px;
+}
 .responsive-table li {
     border-radius: 3px;
     padding: 25px 30px;

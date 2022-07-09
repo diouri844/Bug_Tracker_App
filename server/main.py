@@ -9,7 +9,6 @@ cors = CORS(my_app)
 my_app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-
 @my_app.route("/get-auth",methods=["POST"])
 @cross_origin()
 def authentification():
@@ -46,6 +45,27 @@ def registration():
                                               registration_data['Email'],
                                               registration_data['Password'])
             return jsonify({"message": response_insert_user,'RegistrationState':registration_state})
+
+
+@my_app.route("/add/<subject>",methods=["POST"])
+@cross_origin()
+def add_data(subject):
+    list_subject_dispo = ['Project','Team']
+    message_response = ""
+    state = ""
+    if request.method=='POST':
+        if subject in list_subject_dispo:
+            if subject == 'Project':
+                response_project_creator = create_project(request.form.to_dict())
+                if response_project_creator < 0:
+                    message_response = "We cannot create a project at this time, please try again."
+                    state = "error"
+                else:
+                    message_response = "Project created successfully"
+                    state = "success"
+    return jsonify({"message": message_response,'CreateState':state})
+
+
 
 
 

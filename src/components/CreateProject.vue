@@ -187,9 +187,28 @@ export default {
             this.has_resultat = false;
             this.headermessage = " Creating now .......  ";
             // send post request to the end-point :
-            for (var pair of  project_data.values()){
-                console.log(pair);
-            }
+            axios.post("http://127.0.0.1:5000/add/Project",project_data)
+            .then(response => {
+                console.log(response);
+                if(response.data.CreateState === "success"){
+                    this.$notify({
+                        type:"succses",
+                        title: "Create Project ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
+                }else{
+                    this.$notify({
+                        type:"error",
+                        title: "Create Project ",
+                        text: response.data.message,
+                        position:"bottom right"
+                    });
+                }
+            }).catch(error => {
+                console.error(error);
+            })
+            this.$emit("closeModal");
         }
     }
 }

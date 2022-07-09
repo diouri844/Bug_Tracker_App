@@ -1,4 +1,4 @@
-<template >
+<template>
         <button v-show="display_close_btn" type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_search_area"></button>
         <template  v-for="(item,index) in Data" :key="index">
             <div v-show="display_search_area"  class="container">
@@ -77,6 +77,10 @@ export default {
   border-radius: 15px;
   background-color: #000;
 }
+
+
+
+
 
 .btn-close{
     margin-bottom: 5px;

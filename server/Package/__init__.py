@@ -126,3 +126,31 @@ def get_project_Id(key):
     }
     ))
     return results
+
+def create_project(data):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # data is an dict:
+    return_state = 1
+    try:
+        contrib_array = []
+        for contrib in data['Contributors'].split(","):
+            contrib_array.append(contrib)
+        my_db.Project.insert_one({
+            'Name':data['Name'],
+            'Team':data['Team'],
+            'Owner':data['Owner'],
+            'Contributors':contrib_array,
+            'State':'In devlopement',
+            'Discription':data['Describ'],
+            'Edate':data['Edate'],
+            'Sdate':data['Sdate']
+        })
+    except Exception as e:
+        return_state = -1
+    return return_state

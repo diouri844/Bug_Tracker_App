@@ -32,16 +32,21 @@
       <h1> No Results Found   </h1>
       <i class="fa-solid fa-face-sad-tear"></i>
     </div>
-    <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result" v-bind:Data="search_result_data"></SearchResultUser>
+      <SearchResultUser @display_deafault="redirect_to_home"
+          class="side-item"
+          v-if="show_search_result"
+          v-bind:Data="search_result_data">
+        </SearchResultUser>
     <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
     <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result" v-bind:Data="search_result_data"></SearchResultId>
     <FoterTool v-if="isdefault"
+    class="footer-comp"
     @addProject="addNewProject = true"
     @addContrib="invitContrib = true"
     @UpdateProject="updateProject = true"
     @addTeam="addTeam = true"
     ></FoterTool>
-    <CreateProject v-bind:User="userName" v-show="addNewProject" @closeModal="addNewProject = false"></CreateProject>
+    <CreateProject v-bind:User="userName" v-show="addNewProject" @closeModal="force_closing_modal"></CreateProject>
   </div>
 </template>
 
@@ -105,6 +110,14 @@ export default {
       redirect_to_home_from_id(){
         this.show_search_Id_result = false;
         this.isdefault = true;
+      },
+      force_closing_modal(){
+        this.isdefault = false;
+        setTimeout(()=>{
+              this.isdefault = true;
+        },1000);
+        this.addNewProject = false;
+        this.$forceUpdate();
       },
       search_Now(){
         //check if entry is failed :
@@ -181,6 +194,10 @@ export default {
   background-color:#537895;
   color:#fff;
 }
+
+
+
+
 .input_search{
     padding: 3px 8px;
     border:none;
@@ -318,4 +335,6 @@ select option[value="Team"] {
   grid-column: 2/ span 10 ;
   grid-row: 4/ span 5;
 }
+
+
 </style>
