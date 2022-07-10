@@ -154,3 +154,26 @@ def create_project(data):
     except Exception as e:
         return_state = -1
     return return_state
+
+def add_project_team(team,project,state):
+    reponse = 1
+    try:
+        # get connexion with atlas mongodb:
+        path = dirname(abspath(__file__)) + '/.env'
+        load_dotenv(path)
+        connexion_uri = os.getenv('DBA_URI')
+        # get connexion with atlas mongodb :
+        my_client = MongoClient(connexion_uri)
+        my_db = my_client.BUG_TRAKER_DBA
+        my_db.Team.update_one({
+            'TeamName':team
+        },{
+            '$addToSet':{
+                'TeamProject':project,
+                'ProjectState':state
+            }
+        })
+    except Exception as e:
+        print("[Error add project to team ]: "+str(e))
+        response = -1
+    return reponse

@@ -1,25 +1,27 @@
 <template>
         <button v-show="display_close_btn" type="button" class="btn-close btn-danger" aria-label="Close" v-on:click="close_search_area"></button>
-        <template  v-for="(item,index) in Data" :key="index">
-            <div v-show="display_search_area"  class="container">
-                <div class="header">
-                    <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.Name }}</h5>
-                    <h6 class="project-contributors_number" 
-                    @click="show_liste_contributors(item)"
-                    > {{ item.Contributors.length }} contributors </h6>
+        <perfect-scrollbar class="container">
+            <template  v-for="(item,index) in Data" :key="index">
+                <div v-show="display_search_area"  class="container-item">
+                    <div class="header">
+                        <h5 class="project-title"><i class="fa-solid fa-folder"></i> {{ item.Name }}</h5>
+                        <h6 class="project-contributors_number" 
+                        @click="show_liste_contributors(item)"
+                        > {{ item.Contributors.length }} contributors </h6>
+                    </div>
+                    <div class="body">
+                        <p class="description">
+                            {{ item.Discription }}
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <h7 class="project-start-date"> {{ item.Sdate }}</h7>
+                        <h7 class="project-state"> {{ item.State }}</h7>
+                        <h7 class="project-end-date"> {{ item.Edate }}</h7>
+                </div>                
                 </div>
-                <div class="body">
-                    <p class="description">
-                        {{ item.Discription }}
-                    </p>
-                </div>
-                <div class="footer">
-                    <h7 class="project-start-date"> {{ item.Sdate }}</h7>
-                    <h7 class="project-state"> {{ item.State }}</h7>
-                    <h7 class="project-end-date"> {{ item.Edate }}</h7>
-            </div>                
-            </div>
-        </template>
+            </template>
+        </perfect-scrollbar>
     <ProjectContributorsListe 
         class=""
         v-show="display_contributors"
@@ -69,15 +71,20 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 700px;
+  max-width: 750px;
+  height:500px;
   padding:10px 10px;
   margin-top:8px;
   display:grid;
   grid-column:  span 10;
-  border-radius: 15px;
-  background-color: #000;
 }
 
+.container-item{
+    margin-bottom:10px;
+    background-color: #000;
+    border-radius:15px;
+    padding:10px 10px;
+}
 
 
 

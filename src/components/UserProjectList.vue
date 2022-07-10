@@ -1,5 +1,5 @@
 <template>
-    <div v-show="currentuserHasProjects" class="container">
+    <div v-show="currentuserHasProjects" class="container" appear>
         <ul class="responsive-table">
             <li class="table-header">
                 <div class="col col-1"> Id</div>
@@ -7,6 +7,11 @@
                 <div class="col col-3"><i class="fa-solid fa-people-group"></i> Team </div>
                 <div class="col col-4"><i class="fa-solid fa-spinner"></i> Status</div>
             </li>
+            <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">    
+              <vuetyped :strings="['No project yet :).......... ']" :typeSpeed="70" class="typing-comp">
+                <h1 class="typing handler-message"> </h1>
+              </vuetyped>
+            </div>
             <perfect-scrollbar tag="div" class="body_tab">
             <li v-for="(item,index) in Data" :key="index" class="table-row">
                 <div class="col col-1 col-1-data" data-label="Job Id">{{ item.Name }}</div>
@@ -16,12 +21,6 @@
             </li>
             </perfect-scrollbar>
         </ul>
-          <div v-show="dontcurrentuserHasProjects" class="No-project-Handler">
-            <vuetyped :strings="['No project yet :).......... ']" :typeSpeed="70" class="typing-comp">
-              <h1 class="typing handler-message"> </h1>
-            </vuetyped>
-            <!--<Transition name="bounce" apear><h1 class="handler-message" >  </h1>-->
-          </div>
     </div>
 </template>
 
@@ -39,6 +38,7 @@ import axios from "axios";
       vuetyped
     },
     mounted(){
+        this.$forceUpdate;
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
@@ -122,6 +122,7 @@ body {
 
 .No-project-Handler{
     width: 1000px;
+    height:40px;
     padding:10px 10px;
     margin-top:8px;
     display:grid;

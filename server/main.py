@@ -65,7 +65,22 @@ def add_data(subject):
                     state = "success"
     return jsonify({"message": message_response,'CreateState':state})
 
-
+@my_app.route("/add/Team/Project",methods=["POST"])
+@cross_origin()
+def add_project_to_team():
+    if request.method == "POST":
+        message_response = ""
+        data = request.form.to_dict()
+        print(data)
+        team_name = data['Team']
+        project_name = data['Project']
+        project_state = data['State']
+        response_insert = add_project_team(team_name,project_name,project_state)
+        if response_insert < 0:
+            message_response =  "We can not add selected project to the team target "
+        else:
+            message_response = " add project to team project list done :) ......"
+        return jsonify({"message": message_response})
 
 
 
