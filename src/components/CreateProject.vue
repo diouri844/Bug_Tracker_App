@@ -72,7 +72,7 @@
         </Transition>
 </template>
 
-<script>
+<script scoped>
 import axios from "axios"
 
 

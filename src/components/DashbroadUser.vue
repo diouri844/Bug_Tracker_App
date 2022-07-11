@@ -55,6 +55,11 @@
                     @closeModal="force_closing_modal"
                     >
     </CreateProject>
+    <InviteContribe   v-show="invitContrib"
+                      @closeModal="invitContrib = !invitContrib"
+    >
+    
+    </InviteContribe>
   </div>
 </template>
 
@@ -66,6 +71,7 @@ import SearchResultTeam from "@/components/SearchResultTeam.vue"
 import SearchResultId from "@/components/SearchResultId.vue"
 import FoterTool from "@/components/FoterTool.vue"
 import CreateProject from "@/components/CreateProject.vue"
+import  InviteContribe from "@/components/InviteContribe.vue"
 import axios from 'axios'
 
 
@@ -82,7 +88,8 @@ export default {
       SearchResultTeam,
       SearchResultId,
       FoterTool,
-      CreateProject
+      CreateProject,
+      InviteContribe
     },
     data(){
       return{
