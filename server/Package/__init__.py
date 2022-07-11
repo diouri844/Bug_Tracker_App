@@ -146,7 +146,7 @@ def create_project(data):
             'Team':data['Team'],
             'Owner':data['Owner'],
             'Contributors':contrib_array,
-            'State':'In devlopement',
+            'State':data['State'],
             'Discription':data['Describ'],
             'Edate':data['Edate'],
             'Sdate':data['Sdate']
@@ -168,11 +168,22 @@ def add_project_team(team,project,state):
         my_db.Team.update_one({
             'TeamName':team
         },{
-            '$addToSet':{
-                'TeamProject':project,
-                'ProjectState':state
-            }
-        })
+            '$addToSet':
+                {
+                'TeamProject':project
+                }
+            },
+                upsert=true
+        )
+        my_db.Team.update_one({
+            'TeamName':team
+            },{
+                '$addToSet':{
+                    'ProjectState':state
+                }
+            },
+            upsert=true
+        )
     except Exception as e:
         print("[Error add project to team ]: "+str(e))
         response = -1

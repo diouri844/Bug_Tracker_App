@@ -26,7 +26,7 @@
 
 <script>
 import vuetyped from "vue3typed/libs/typed";
-import axios from "axios";
+import axios from "axios";    
     export default{
     props:{
       User:{
@@ -38,11 +38,30 @@ import axios from "axios";
       vuetyped
     },
     mounted(){
-        this.$forceUpdate;
+        this.$forceUpdate();
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
           console.log(response.data.reponse_data);
+          if(response.data.reponse_data.length===0){
+            this.currentuserHasProjects = false;
+            this.dontcurrentuserHasProjects = true;
+          }else{
+            this.currentuserHasProjects = true;
+            this.dontcurrentuserHasProjects = false;
+            this.Data = response.data.reponse_data;
+          }
+        })
+        .catch(error =>{
+          console.error(error);
+          this.dontcurrentuserHasProjects = true;
+        });
+    },
+    unmounted(){
+      this.$forceUpdate();
+        //fecth data from endpoint : 
+        axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
+        .then(response =>{
           if(response.data.reponse_data.length===0){
             this.currentuserHasProjects = false;
             this.dontcurrentuserHasProjects = true;

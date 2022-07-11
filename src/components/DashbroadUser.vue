@@ -24,7 +24,11 @@
         <li v-on:click="logout_to_home"><span class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i> Logout</span></li>
       </ul>
     </div>
-    <UserProjectList class="side-item" v-show="isdefault" :User="this.userName"></UserProjectList>
+    <UserProjectList  class="side-item" 
+                      v-show="isdefault"
+                      :User="this.userName"
+                      >
+    </UserProjectList>
     <div v-show="isloading" class="loading_message">
       <h1> Hum something loud while others stare .......  </h1>
     </div>
@@ -46,7 +50,11 @@
     @UpdateProject="updateProject = true"
     @addTeam="addTeam = true"
     ></FoterTool>
-    <CreateProject v-bind:User="userName" v-show="addNewProject" @closeModal="force_closing_modal"></CreateProject>
+    <CreateProject  v-bind:User="userName" 
+                    v-show="addNewProject" 
+                    @closeModal="force_closing_modal"
+                    >
+    </CreateProject>
   </div>
 </template>
 

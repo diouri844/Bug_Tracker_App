@@ -19,6 +19,12 @@
                             <input type="date" class="Date" id="startedDate" v-model="projectsdate">
                             <label for="endedDate"> Expected end  date </label>
                             <input type="date" class="Date" id="endedDate" v-model="projectedate">
+                            <select name="state" id="project_state" v-model="projectstate">
+                                <option class="option_item" value="Started" >Started</option>
+                                <option class="option_item" value="On progress" >On progress </option>
+                                <option class="option_item" value="On hold">On hold </option>
+                                <option class="option_item" value="Ended">Ended </option>
+                            </select>
                     </div>
                 </transition>
                 <transition name="nested" appear>
@@ -89,6 +95,7 @@ export default {
             "projectdescrib":'',
             "projectsdate":'',
             "projectedate":'',
+            "projectstate":'Started',
             'projectteam':'', 
             'teamsearchresult':'',
             'selectedTeam':''
@@ -108,7 +115,6 @@ export default {
             if(this.projectname.length === 0 ||  /\s/.test(this.projectname)){
                 err_message = "Project name cannot be empty or contain spaces";
                 counter = 1;
-                console.log(err_message,counter);
             }
             if(this.projectdescrib.length === 0 || this.projectdescrib.length < 10 ){
                 err_message = "The project description may not be empty or lower than 10";
@@ -135,10 +141,6 @@ export default {
                         position:"bottom right"
                     });
             }
-            console.log(this.projectname,
-                        this.projectdescrib,
-                        this.projectsdate,
-                        this.projectedate);
         },
         find_team(){
             // check if team input is empty:
@@ -182,6 +184,7 @@ export default {
             project_data.append('Edate',this.projectedate);
             project_data.append('Team',this.selectedTeam);
             project_data.append('Contributors',this.teamsearchresult.TeamGroup);
+            project_data.append('State',this.projectstate);
             project_data.append('Owner',this.User);
             this.step2 = false;
             this.has_resultat = false;
@@ -212,7 +215,7 @@ export default {
             let team_project_state = new FormData();
             team_project_state.append("Team",this.selectedTeam);
             team_project_state.append("Project",this.projectname);
-            team_project_state.append("State","In devlopement");
+            team_project_state.append("State",this.projectstate);
             axios.post("http://127.0.0.1:5000/add/Team/Project",team_project_state)
             .then(response =>{
                 console.log(response);
@@ -321,7 +324,7 @@ export default {
     width:80%;
     place-items: left;
 }
-.projectname , .description, .Date, .projectteam{
+.projectname , .description, .Date, .projectteam, #project_state{
     margin-bottom:10px;
     padding: 5px 10px;
     outline: none;
@@ -330,6 +333,18 @@ export default {
     border:none;
     border-left: 5px solid #ccc;
 }
+#project_state{
+    margin-left:5px;
+    margin-right:10px;
+    padding:3px 8px;
+    outline: none;
+    color:#fff;
+    background:#000;
+    border-bottom:1px solid #fff;
+    outline: none;
+    border-radius: 26px 5px 5px 6px;
+}
+
 .description{
     resize: none;
 }
