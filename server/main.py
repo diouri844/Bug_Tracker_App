@@ -82,6 +82,15 @@ def add_project_to_team():
             message_response = " add project to team project list done :) ......"
         return jsonify({"message": message_response})
 
+@my_app.route("/invitation",methods=["POST", "GET"])
+@cross_origin()
+def manage_invit():
+    if request.method == "POST":
+        current_invitation = request.form.to_dict()
+        print(current_invitation)
+    return jsonify({"message":"invitation in process ....."})
+
+
 
 
 @my_app.route("/get-all-project/<subject>/<key>",methods=["GET"])

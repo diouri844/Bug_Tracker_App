@@ -50,7 +50,8 @@
                             </div>
                             <div v-show="has_resultat" class="result_team_message">
                                 <h3>
-                                        {{ projectresultat }}
+                                        <i class="fa-solid fa-folder"></i>
+                                        {{ projectresultatname }}
                                 </h3>
                             </div>
                     </div>
@@ -65,6 +66,12 @@
 import axios from "axios"
 
 export default {
+    props:{
+      User:{
+        type: String,
+        required: true
+      }
+    },
     data(){
         return{
             'step1':true,
@@ -75,7 +82,8 @@ export default {
             'isloading':false,
             'isfailed':false,
             'has_resultat':false,
-            'projectresultat':''
+            'projectresultat':'',
+            'projectresultatname':''
         }
     },
     methods:{
@@ -83,7 +91,6 @@ export default {
             this.$emit("CloseModal");
         },
         find_project(){
-            console.log("fin project serve");
             console.log(this.projectname);
             //check if user input are valid or note :
             if(this.projectname.length === 0 ||  /\s/.test(this.projectname)){
@@ -103,10 +110,12 @@ export default {
                         this.isloading = false;
                         this.isfailed = true;
                         setTimeout(()=>{
-                        this.isfailed = false;   
+                        this.isfailed = false;
+                        this.projectname = '';
                         },2000); 
                     }else{
-                        this.projectresultat = response.data.reponse_data[0].Name;
+                        this.projectresultat = response.data.reponse_data[0];
+                        this.projectresultatname = this.projectresultat.Name;
                         this.isloading = false;
                         this.has_resultat = true;
                         //switch to the next step : 
@@ -132,19 +141,83 @@ export default {
                 this.isloading = true;
                 axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.username)
                 .then(response => {
+                    this.isloading = false;
                     if(response.data.reponse_data.length===0){
-                        this.isloading = false;
                         this.isfailed = true;
                         setTimeout(()=>{
-                        this.isfailed = false;   
+                        this.isfailed = false;
+                        this.step2 = false;
+                        this.step1 = true;
+                        this.headermessage=' select project ';
+                        this.projectname = '';
+                        this.username = '';
                         },2000);
                          this.has_resultat = false;
                     }else{
                         // i need to change end-point :)..........
-                        console.log(response.data);
-                        let user_name = response.data.response_data[0].userFname + " " + response.data.response_data[0].userLname;
-                        let project = this.projectresultat;
-                        this.projectresultat = "Invite "+user_name+" to contribute in "+project;
+                        // if return response len > 0 => user account exist:
+                        // teste if the connected user is the owner of the project :
+                        if(this.User === this.projectresultat.Owner){
+                            let error_message = '';
+                            let is_error = false;
+                            console.log("you can submit invit or pullrequest ");
+                            this.projectresultatname = "Invite "+this.username+" to contribute in "+this.projectname;
+                            // check if the user target is in project target contributors liste :
+                            if(this.projectresultat.Contributors.includes(this.username)===true){
+                                // user alrady existe in project contrib user list :
+                                error_message = 'User already within project contributors.';
+                                is_error = true;
+                            }
+                            if(this.username === this.projectresultat.Owner){
+                                error_message = 'The user is the proprietor of the project.';
+                                is_error = true;
+                            }
+                            if(is_error === true){
+                                this.$notify({
+                                    type:"error",
+                                    title: "Permission Error ",
+                                    text: error_message,
+                                    position:"bottom right"
+                                });
+                                setTimeout(()=>{
+                                    this.has_resultat=false;
+                                    this.step2 = false;
+                                    this.step1 = true;
+                                    this.headermessage=' select project ';
+                                    this.projectname = '';
+                                    this.username = '';
+                            },2000);         
+                            }else{
+                                // no error all is great ==> send invit request :
+                                let invitation = new FormData();
+                                invitation.append("From",this.User);
+                                invitation.append("To",this.username);
+                                invitation.append("Project",this.projectname);
+                                invitation.append("Satate","sended");
+                                // sned to end-point:
+                                axios.post("http://127.0.0.1:5000/invitation",invitation)
+                                .then(response => {
+                                    console.log(response);
+                                }).catch(error => {
+                                    console.error(error);
+                                });
+                            }
+                        }else{
+                            // the connected user is not the owner of project => you can't invit contribs :
+                            this.$notify({
+                                type:"error",
+                                title: "Permission Error ",
+                                text: "You are not the owner of project , you can't invit users ",
+                                position:"bottom right"
+                            });
+                            setTimeout(()=>{
+                                this.has_resultat=false;
+                                this.step2 = false;
+                                this.step1 = true;
+                                this.headermessage=' select project ';
+                                this.projectname = '';
+                            },2000);
+                        }
                     }
                 }).catch(error => {
                     console.error(error);

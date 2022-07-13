@@ -57,6 +57,7 @@
     </CreateProject>
     <InviteContribe   v-show="invitContrib"
                       @closeModal="invitContrib = !invitContrib"
+                      v-bind:User="userName"
     >
     
     </InviteContribe>
