@@ -51,16 +51,19 @@
     @addTeam="addTeam = true"
     ></FoterTool>
     <CreateProject  v-bind:User="userName" 
-                    v-show="addNewProject" 
+                    v-if="addNewProject" 
                     @closeModal="force_closing_modal"
                     >
     </CreateProject>
-    <InviteContribe   v-show="invitContrib"
+    <InviteContribe   v-if="invitContrib"
                       @closeModal="invitContrib = !invitContrib"
                       v-bind:User="userName"
     >
-    
     </InviteContribe>
+    <UpdateProjectInfo v-if="updateProject"
+                      @closeModal="updateProject = !updateProject"
+                      v-bind:User="userName">
+    </UpdateProjectInfo>
   </div>
 </template>
 
@@ -73,6 +76,7 @@ import SearchResultId from "@/components/SearchResultId.vue"
 import FoterTool from "@/components/FoterTool.vue"
 import CreateProject from "@/components/CreateProject.vue"
 import  InviteContribe from "@/components/InviteContribe.vue"
+import UpdateProjectInfo from "@/components/UpdateProjectInfo.vue"
 import axios from 'axios'
 
 
@@ -90,7 +94,8 @@ export default {
       SearchResultId,
       FoterTool,
       CreateProject,
-      InviteContribe
+      InviteContribe,
+      UpdateProjectInfo
     },
     data(){
       return{

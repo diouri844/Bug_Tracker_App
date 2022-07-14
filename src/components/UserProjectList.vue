@@ -38,7 +38,6 @@ import axios from "axios";
       vuetyped
     },
     mounted(){
-        this.$forceUpdate();
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
@@ -110,11 +109,6 @@ import axios from "axios";
             transform: scale(1);
         }
     }
-
-
-
-
-
 
 .content-side{
     margin:0;

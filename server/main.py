@@ -86,10 +86,17 @@ def add_project_to_team():
 @cross_origin()
 def manage_invit():
     if request.method == "POST":
+        response_message = ""
+        state = ""
         current_invitation = request.form.to_dict()
-        print(current_invitation)
-    return jsonify({"message":"invitation in process ....."})
-
+        response_add_invit = create_invitation(current_invitation)
+        if response_add_invit < 0:
+            response_message = "There is an error in sending an invitation, please try later."
+            state = "error"
+        else:
+            response_message = "Invitation sent successfully"
+            state = "success"
+    return jsonify({"message":response_message, "state":state})
 
 
 

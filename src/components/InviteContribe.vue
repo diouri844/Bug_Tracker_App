@@ -53,6 +53,13 @@
                                         <i class="fa-solid fa-folder"></i>
                                         {{ projectresultatname }}
                                 </h3>
+                                <button 
+                                    v-if="invite"
+                                    class="btn-samll"
+                                    @click="sendInvitation">
+                                    <i class="fa-solid fa-check"></i>
+                                    send invitation
+                                </button>
                             </div>
                     </div>
 
@@ -72,6 +79,11 @@ export default {
         required: true
       }
     },
+    mounted(){
+        this.$forceUpdate();
+        this.step1 = true;
+        this.step2 = false;
+    },
     data(){
         return{
             'step1':true,
@@ -82,6 +94,7 @@ export default {
             'isloading':false,
             'isfailed':false,
             'has_resultat':false,
+            'invite':false,
             'projectresultat':'',
             'projectresultatname':''
         }
@@ -167,6 +180,7 @@ export default {
                                 // user alrady existe in project contrib user list :
                                 error_message = 'User already within project contributors.';
                                 is_error = true;
+                                
                             }
                             if(this.username === this.projectresultat.Owner){
                                 error_message = 'The user is the proprietor of the project.';
@@ -179,6 +193,7 @@ export default {
                                     text: error_message,
                                     position:"bottom right"
                                 });
+                                this.has_resultat = false;
                                 setTimeout(()=>{
                                     this.has_resultat=false;
                                     this.step2 = false;
@@ -188,21 +203,9 @@ export default {
                                     this.username = '';
                             },2000);         
                             }else{
-                                // no error all is great ==> send invit request :
-                                let invitation = new FormData();
-                                invitation.append("From",this.User);
-                                invitation.append("To",this.username);
-                                invitation.append("Project",this.projectname);
-                                invitation.append("Satate","sended");
-                                // sned to end-point:
-                                axios.post("http://127.0.0.1:5000/invitation",invitation)
-                                .then(response => {
-                                    console.log(response);
-                                }).catch(error => {
-                                    console.error(error);
-                                });
-                            }
-                        }else{
+                                this.invite = true;
+                        }}
+                        else{
                             // the connected user is not the owner of project => you can't invit contribs :
                             this.$notify({
                                 type:"error",
@@ -223,6 +226,30 @@ export default {
                     console.error(error);
                 });
             }
+        },
+        sendInvitation(){
+            let invitation = new FormData();
+            invitation.append("From",this.User);
+            invitation.append("To",this.username);
+            invitation.append("Project",this.projectname);
+            // 3 state : 1) sended (default) 2) accepted 3) rejected:
+            invitation.append("State","sended");
+            // sned to end-point:
+            axios.post("http://127.0.0.1:5000/invitation",invitation)
+            .then(response => {
+                console.log(response);
+                this.$notify({
+                    type:response.data.state,
+                    title: "Invitation Notification",
+                    text: response.data.message,
+                    position:"bottom right"
+                });
+                this.step2 = false;
+                this.step1 = false;
+                this.$emit("CloseModal");
+            }).catch(error => {
+                console.error(error);
+            });
         }
     }
     
@@ -291,6 +318,31 @@ export default {
   font-size:20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+.btn-samll{
+    color:#ccc;
+    border:1px solid #ccc;
+    background:transparent;
+    padding: 8px 15px;
+    border-radius:18px;
+    margin: 0px 0px 0px auto;
+    display:flex;
+    outline:none;
+    cursor:pointer;
+    font-size:13px;
+}
+.fa-check{
+    margin-right: 8px;
+    margin-top:5px;
+}
+.btn-samll:hover{
+    background-color:#ccc;
+    color:#fff;
+    border-color: #fff;
+}
+
+
+
+
 .error_message{
   width: 800px;
     padding:10px 10px;

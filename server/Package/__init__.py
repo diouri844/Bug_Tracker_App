@@ -188,3 +188,26 @@ def add_project_team(team,project,state):
         print("[Error add project to team ]: "+str(e))
         response = -1
     return reponse
+
+
+
+### invitations processe : 
+def create_invitation(invitation_dict):
+    reponse = 1
+    try:
+        # get connexion with atlas mongodb:
+        path = dirname(abspath(__file__)) + '/.env'
+        load_dotenv(path)
+        connexion_uri = os.getenv('DBA_URI')
+        # get connexion with atlas mongodb :
+        my_client = MongoClient(connexion_uri)
+        my_db = my_client.BUG_TRAKER_DBA
+        my_db.InvitationContib.insert_one({
+            'From':invitation_dict['From'],
+            'To':invitation_dict['To'],
+            'Project':invitation_dict['Project'],
+            'state':invitation_dict['State'],
+        })
+    except Exception as e:
+        reponse = -1
+    return reponse 
