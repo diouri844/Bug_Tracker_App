@@ -37,9 +37,9 @@
                                 <i class="fa-solid fa-face-sad-tear"></i>
                             </div>
                             <div v-show="has_resultat" class="result_team_message">
-                                <h3>
+                                <h3 v-for="(item,index) in data" :key="index">
                                         <i class="fa-solid fa-folder"></i>
-                                        {{ projectresultatname }}
+                                        {{ index }}
                                 </h3>
                             </div>
                             <div v-if="dontcurrentuserHasProjects" class="No-project-Handler">    
@@ -80,6 +80,9 @@ export default {
             },2800);
           }else{
             // current user has project = > display all project as an liste :
+            this.data = response.data.response_data;
+            this.has_resultat = true;
+            console.log(this.data);
           }
         })
         .catch(error => {
