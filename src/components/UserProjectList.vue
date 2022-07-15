@@ -24,7 +24,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
 import vuetyped from "vue3typed/libs/typed";
 import axios from "axios";    
     export default{
@@ -38,10 +38,12 @@ import axios from "axios";
       vuetyped
     },
     mounted(){
+        console.log("loading mounted : ",this.isloading);
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
           console.log(response.data.reponse_data);
+          this.isloading = false;
           if(response.data.reponse_data.length===0){
             this.currentuserHasProjects = false;
             this.dontcurrentuserHasProjects = true;
@@ -79,7 +81,7 @@ import axios from "axios";
         return {
             "Data":'',
             "currentuserHasProjects":false,
-            "dontcurrentuserHasProjects":false
+            "dontcurrentuserHasProjects":false,
         }
     },
     methode:{
@@ -145,6 +147,7 @@ body {
     align-content: center;
     color:#fff;
 }
+
 .typing-comp{
   grid-column: 2/ span 9;
   display:flex;

@@ -25,7 +25,7 @@
       </ul>
     </div>
     <UserProjectList  class="side-item" 
-                      v-show="isdefault"
+                      v-if="isdefault"
                       :User="this.userName"
                       >
     </UserProjectList>
@@ -56,12 +56,12 @@
                     >
     </CreateProject>
     <InviteContribe   v-if="invitContrib"
-                      @closeModal="invitContrib = !invitContrib"
+                      @closeModal="force_closing_modal"
                       v-bind:User="userName"
     >
     </InviteContribe>
     <UpdateProjectInfo v-if="updateProject"
-                      @closeModal="updateProject = !updateProject"
+                      @closeModal="force_closing_modal"
                       v-bind:User="userName">
     </UpdateProjectInfo>
   </div>
@@ -138,7 +138,14 @@ export default {
               this.isdefault = true;
         },1000);
         this.addNewProject = false;
+        this.invitContrib =false;
+        this.updateProject = false;
+        this.isloading = true;
+        setTimeout(()=>{
+          this.isloading = false;
+        },1500);
         this.$forceUpdate();
+        
       },
       search_Now(){
         //check if entry is failed :
