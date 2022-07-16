@@ -2,14 +2,20 @@
     <div class="modal-overlay open-modal">
             <div class="modal-container">
                 <div class="modal-header">
-                    <div class="search">
+                    <div v-show="insearch" class="search">
                                 <input type="text" placeholder="Search for project" class="projectname" v-model="projectname">
                                 <button 
                                 class="btn-search"
                                 @click="find_project">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
-                            </div>
+                    </div>
+                    <div v-show="step3" class="update">
+                        <h3 class="header">
+                            <i class="fa-solid fa-plus"></i>
+                            update {{ PnameTarget }}  
+                        </h3>
+                    </div>
                     <button type="button" class="btn-close btn-light bg-light" 
                     aria-label="Close"
                     @click="CloseMe"></button>
@@ -58,8 +64,22 @@
                                 </h3>
                             </div>
                     </div>
+                    <div v-if="step3" class="modal-body">
+                        <input type="text" placeholder="Project Name" class="projectname" v-model="PnameTarget">
+                        <label for="startedDate"> Start date </label>
+                        <input type="date" class="Date" id="startedDate" v-model="PdateStarget">
+                        <label for="endedDate"> Expected end  date </label>
+                        <input type="date" class="Date" id="endedDate" v-model="PdateEtarget">
+                        <select name="state" id="project_state" v-model="PstateTarget">
+                            <option class="option_item" value="Started" >Started</option>
+                            <option class="option_item" value="On progress" >On progress </option>
+                            <option class="option_item" value="On hold">On hold </option>
+                            <option class="option_item" value="Ended">Ended </option>
+                        </select>
+                        
+                    </div>
             </div>
-        </div>    
+        </div>
 </template>
 
 
@@ -77,7 +97,9 @@ export default {
       vuetyped
     },
     mounted(){
+        this.insearch = true;
         this.isloading = true;
+        this.step3 = false;
         // fetch all project names of connected user :
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
@@ -105,6 +127,8 @@ export default {
             'headermessage':'',
             'step1':Boolean,
             'step2':Boolean,
+            'step3':false,
+            'insearch':Boolean,
             'projectname':'',
             'data':'',
             'data_search':'',
@@ -115,7 +139,13 @@ export default {
             'has_resultat':false,
             'has_resultat2':false,
             'dontcurrentuserHasProjects2':false,
-            'dontcurrentuserHasProjects':false
+            'dontcurrentuserHasProjects':false,
+            'PnameTarget':'',
+            'PownerTarget':'',
+            'PstateTarget':'',
+            'PdateStarget':'',
+            'PdateEtarget':'',
+            'PteamTarget':''
         }
     },
     methods:{
@@ -124,6 +154,15 @@ export default {
         },
         update_item(item){
             console.log(item.Name);
+            this.step1 = false;
+            this.step2 = false;
+            this.step3 = true;
+            this.insearch = false;
+            this.PnameTarget = item.Name;
+            this.PownerTarget = item.Owner;
+            this.PstateTarget = item.State;
+            this.PdateStarget = item.Sdate;
+            this.PdateEtarget = item.Edate;
         },
         find_project(){
             this.step1 = false;
@@ -354,5 +393,36 @@ export default {
     border:none;
     border-left: 5px solid #ccc;
 }
+
+
+.projectname , .description, .Date, .projectteam, #project_state{
+    margin-bottom:10px;
+    padding: 5px 10px;
+    outline: none;
+    background:transparent;
+    color:#ccc;
+    border:none;
+    border-left: 5px solid #ccc;
+}
+#project_state{
+    margin-left:5px;
+    margin-right:10px;
+    padding:3px 8px;
+    outline: none;
+    color:#fff;
+    background:#000;
+    border-bottom:1px solid #fff;
+    outline: none;
+    border-radius: 26px 5px 5px 6px;
+}
+label{
+    color:#eee;
+}
+
+.Date:hover{
+    color-scheme: dark;
+    cursor: pointer;
+}
+
 
 </style>

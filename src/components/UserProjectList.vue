@@ -38,7 +38,6 @@ import axios from "axios";
       vuetyped
     },
     mounted(){
-        console.log("loading mounted : ",this.isloading);
         //fecth data from endpoint : 
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
@@ -179,12 +178,14 @@ body {
     letter-spacing: 0.03em;
   }
 .responsive-table  .table-row {
-    background:linear-gradient(to right, #95A5A6,#000);
+    /*background:linear-gradient(to right, #95A5A6,#000);*/
+    background-color: #6b0f1a;
+    background-image: linear-gradient(315deg, #6b0f1a 0%, #b91372 74%);
     color:#fff;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
   }
 .table-row:hover{
-    box-shadow: 0px 0px 9px 0px #fff;
+    box-shadow: 0px 0px 9px 0px #6b0f1a;
 }
 .fa-people-group{
     font-size: 19px;
