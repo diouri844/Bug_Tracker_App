@@ -170,19 +170,11 @@ def add_project_team(team,project,state):
         },{
             '$addToSet':
                 {
-                'TeamProject':project
-                }
-            },
-                upsert=true
-        )
-        my_db.Team.update_one({
-            'TeamName':team
-            },{
-                '$addToSet':{
-                    'ProjectState':state
-                }
-            },
-            upsert=true
+                'TeamProject':project,
+                'ProjectState':state
+                },
+                'upsert': true
+            }
         )
     except Exception as e:
         print("[Error add project to team ]: "+str(e))

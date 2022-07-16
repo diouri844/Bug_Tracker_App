@@ -36,20 +36,32 @@
       <h1> No Results Found   </h1>
       <i class="fa-solid fa-face-sad-tear"></i>
     </div>
-      <SearchResultUser @display_deafault="redirect_to_home"
+      <SearchResultUser 
+          @display_deafault="redirect_to_home"
           class="side-item"
           v-if="show_search_result"
           v-bind:Data="search_result_data">
         </SearchResultUser>
-    <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item" v-if="show_search_team_result" v-bind:Data="search_result_data"></SearchResultTeam>
-    <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result" v-bind:Data="search_result_data"></SearchResultId>
-    <FoterTool v-if="isdefault"
-    class="footer-comp"
-    @addProject="addNewProject = true"
-    @addContrib="invitContrib = true"
-    @UpdateProject="updateProject = true"
-    @addTeam="addTeam = true"
-    ></FoterTool>
+    <SearchResultTeam 
+          @display_deafault_team="redirect_to_home_form_team" 
+          class="side-item" 
+          v-if="show_search_team_result" 
+          v-bind:Data="search_result_data">
+    </SearchResultTeam>
+    <SearchResultId 
+          @display_deafault_id="redirect_to_home_from_id" 
+          class="side-item" 
+          v-if="show_search_Id_result" 
+          v-bind:Data="search_result_data">
+    </SearchResultId>
+    <FoterTool 
+          v-if="isdefault"
+          class="footer-comp"
+          @addProject="addNewProject = true"
+          @addContrib="invitContrib = true"
+          @UpdateProject="updateProject = true"
+          @addTeam="addTeam = true">
+    </FoterTool>
     <CreateProject  v-bind:User="userName" 
                     v-if="addNewProject" 
                     @closeModal="force_closing_modal"
@@ -64,6 +76,10 @@
                       @closeModal="force_closing_modal"
                       v-bind:User="userName">
     </UpdateProjectInfo>
+    <CreateTeam v-if="addTeam"
+                @closeModal="force_closing_modal"
+                v-bind:User="userName">
+    </CreateTeam>
   </div>
 </template>
 
@@ -77,6 +93,7 @@ import FoterTool from "@/components/FoterTool.vue"
 import CreateProject from "@/components/CreateProject.vue"
 import  InviteContribe from "@/components/InviteContribe.vue"
 import UpdateProjectInfo from "@/components/UpdateProjectInfo.vue"
+import CreateTeam from "@/components/CreateTeam.vue"
 import axios from 'axios'
 
 
@@ -95,7 +112,8 @@ export default {
       FoterTool,
       CreateProject,
       InviteContribe,
-      UpdateProjectInfo
+      UpdateProjectInfo,
+      CreateTeam
     },
     data(){
       return{
@@ -134,16 +152,14 @@ export default {
       },
       force_closing_modal(){
         this.isdefault = false;
-        setTimeout(()=>{
-              this.isdefault = true;
-        },1000);
         this.addNewProject = false;
         this.invitContrib =false;
         this.updateProject = false;
-        this.isloading = true;
+        this.addTeam = false;
+        //this.isloading = true;
         setTimeout(()=>{
-          this.isloading = false;
-        },1500);
+          this.isdefault = true;
+        },500);
         this.$forceUpdate();
         
       },

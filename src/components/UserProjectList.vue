@@ -1,6 +1,6 @@
 <template>
-    <div v-show="currentuserHasProjects" class="container" appear>
-        <ul class="responsive-table">
+    <div class="container" appear>
+        <ul v-show="currentuserHasProjects" class="responsive-table">
             <li class="table-header">
                 <div class="col col-1"> Id</div>
                 <div class="col  col-2"><i class="fa-solid fa-user-tie"></i> Creator </div>
@@ -39,12 +39,12 @@ import axios from "axios";
     },
     mounted(){
         //fecth data from endpoint : 
+        this.currentuserHasProjects = true;
+        this.dontcurrentuserHasProjects = false;
         axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.User)
         .then(response =>{
           console.log(response.data.reponse_data);
-          this.isloading = false;
           if(response.data.reponse_data.length===0){
-            this.currentuserHasProjects = false;
             this.dontcurrentuserHasProjects = true;
           }else{
             this.currentuserHasProjects = true;
@@ -54,7 +54,6 @@ import axios from "axios";
         })
         .catch(error =>{
           console.error(error);
-          this.dontcurrentuserHasProjects = true;
         });
     },
     unmounted(){
@@ -79,8 +78,8 @@ import axios from "axios";
     data(){
         return {
             "Data":'',
-            "currentuserHasProjects":false,
-            "dontcurrentuserHasProjects":false,
+            "currentuserHasProjects":Boolean,
+            "dontcurrentuserHasProjects":Boolean
         }
     },
     methode:{
@@ -136,7 +135,7 @@ body {
 
 .No-project-Handler{
     width: 1000px;
-    height:40px;
+    height:5px;
     padding:10px 10px;
     margin-top:8px;
     display:grid;
@@ -151,6 +150,7 @@ body {
   grid-column: 2/ span 9;
   display:flex;
   width:500px;
+  height:5px;
 }
 .handler-message{
   grid-column: 2/ span 9;

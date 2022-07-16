@@ -76,7 +76,14 @@
                             <option class="option_item" value="On hold">On hold </option>
                             <option class="option_item" value="Ended">Ended </option>
                         </select>
-                        
+                        <label for="team"> Team </label>
+                        <input type="text" class="projectteam" id="team" v-model="PteamTarget">
+                        <button 
+                            class="btn-samll"
+                            >
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Save
+                        </button>
                     </div>
             </div>
         </div>
@@ -163,6 +170,7 @@ export default {
             this.PstateTarget = item.State;
             this.PdateStarget = item.Sdate;
             this.PdateEtarget = item.Edate;
+            this.PteamTarget = item.Team;
         },
         find_project(){
             this.step1 = false;
@@ -307,7 +315,7 @@ export default {
     cursor:pointer;
     font-size:13px;
 }
-.fa-check{
+.fa-check, .fa-floppy-disk{
     margin-right: 8px;
     margin-top:5px;
 }

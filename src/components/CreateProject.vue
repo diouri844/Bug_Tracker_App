@@ -200,6 +200,18 @@ export default {
                         text: response.data.message,
                         position:"bottom right"
                     });
+                    // add project name to the team selected :
+                    let team_project_state = new FormData();
+                    team_project_state.append("Team",this.selectedTeam);
+                    team_project_state.append("Project",this.projectname);
+                    team_project_state.append("State",this.projectstate);
+                    axios.post("http://127.0.0.1:5000/add/Team/Project",team_project_state)
+                        .then(response =>{
+                            console.log(response);
+                        })
+                        .catch(error=>{
+                            console.error(error);
+                        });
                 }else{
                     this.$notify({
                         type:"error",
@@ -210,19 +222,7 @@ export default {
                 }
             }).catch(error => {
                 console.error(error);
-            });
-            // add project name to the team selected :
-            let team_project_state = new FormData();
-            team_project_state.append("Team",this.selectedTeam);
-            team_project_state.append("Project",this.projectname);
-            team_project_state.append("State",this.projectstate);
-            axios.post("http://127.0.0.1:5000/add/Team/Project",team_project_state)
-            .then(response =>{
-                console.log(response);
-            })
-            .catch(error=>{
-                console.error(error);
-            });
+            });            
             this.$emit("closeModal");
         }
     }

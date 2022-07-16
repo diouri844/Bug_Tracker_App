@@ -75,6 +75,7 @@ def add_project_to_team():
         team_name = data['Team']
         project_name = data['Project']
         project_state = data['State']
+        # it shuld send invitation for each team membre :
         response_insert = add_project_team(team_name,project_name,project_state)
         if response_insert < 0:
             message_response =  "We can not add selected project to the team target "
