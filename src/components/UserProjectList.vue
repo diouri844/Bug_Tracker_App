@@ -171,17 +171,22 @@ body {
     margin-bottom: 25px;
   }
 .responsive-table  .table-header {
-    color:#fff;/* #95A5A6;*/
-    background:linear-gradient(to right,#E8126B,#0e0e0e);
+    color:#fff;
+    background-color: #310e68;
+    background-image: linear-gradient(to right,#5f0f40 0%, #310e68 74%);
     font-size: 14px;
     text-transform: capitalize;
     letter-spacing: 0.03em;
   }
 .responsive-table  .table-row {
-    /*background:linear-gradient(to right, #95A5A6,#000);*/
+    /*background:linear-gradient(to right, #95A5A6,#000);
     background-color: #6b0f1a;
     background-image: linear-gradient(315deg, #6b0f1a 0%, #b91372 74%);
     color:#fff;
+    */
+    background-color: #310e68;
+    color:#fff;
+    background-image: linear-gradient(to left,#5f0f40 0%, #310e68 74%);
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
   }
 .table-row:hover{
@@ -191,7 +196,7 @@ body {
     font-size: 19px;
 }
 .team-name{
-    background-color:#537895;
+    background-color:#0E685E;
     color: #fff;
     width:auto;
     text-align: left;

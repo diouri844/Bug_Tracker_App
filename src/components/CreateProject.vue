@@ -241,19 +241,20 @@ export default {
 
 .nested-enter-from,
 .nested-leave-to {
-  /*transform: translateX(500px);*/
-  opacity: 0;
+  transform: translateY(500px);
 }
 
 
 
 
- .bounce-enter-active {
+ .bounce-enter-active,
+ .bounce-leave-active {
         animation: bounce-in 1.5s;
     }
-    .bounce-leave-active {
-        animation: bounce-in 0.5s reverse;
-    }
+.bounce-entre-from,
+.bounce-leave-to {
+    transform: translateY(-500px);
+}
     @keyframes bounce-in {
         0% {
             transform: scale(0);

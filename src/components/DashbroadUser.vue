@@ -221,7 +221,8 @@ export default {
   right:0px;
   bottom:0px;
   left:0px;
-  background:linear-gradient(to right,#E8126B,#0e0e0e);
+  background-color: #310e68;
+  background-image: linear-gradient(316deg, #310e68 0%, #5f0f40 74%);
   position:absolute;
   display:grid;
   grid-template-columns:repeat(12,1fr);
@@ -235,12 +236,9 @@ export default {
   border:2px solid #fff;
 }
 .fa-magnifying-glass:hover{
-  background-color:#537895;
+  background-color:#0E685E;
   color:#fff;
 }
-
-
-
 
 .input_search{
     padding: 3px 8px;
@@ -269,14 +267,14 @@ export default {
 }
 
 select option[value="Id"] {
-  background-color:#537895;
+  background-color:#0E685E;
 }
 select option[value="User"] {
-  background-color:#537895;
+  background-color:#0E685E;
 }
 
 select option[value="Team"] {
-  background-color:#537895;
+  background-color:#0E685E;
 }
 .search-btn-start{
   display: flex;
@@ -347,15 +345,25 @@ select option[value="Team"] {
 
 .dropdown-menu{
   background:none;
+  max-width:100px;
+  text-align: center;
+  border:none;
+  padding:5px 5px;
+}
+.dropdown-item, .dropdown-toggle-split{
+  color:#fff;
+  cursor:pointer;
+  width:auto;
+  background:transparent;
+  max-width:120px;
+  outline:none;
 }
 .dropdown-item{
-  color:#fff;
-  text-align: center;
-  cursor:pointer;
+  margin-left:28%;
 }
-
-.dropdown-item:hover{
-  background-color: #537895;
+.dropdown-item:hover, .dropdown-toggle-split:hover{
+  color:#fff;
+  background-color: #0E685E;
   border-radius: 20px;
 }
 
@@ -372,7 +380,7 @@ select option[value="Team"] {
 
 .custom-element{
   font-family: fantasy;
-  color: #537895;
+  color:#0E685E;
 }
 
 .side-item{
