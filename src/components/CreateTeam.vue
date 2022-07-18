@@ -44,9 +44,11 @@
                                     <i class="fa-solid fa-user"></i>
                                     <span class="left"> {{ responseUser }}</span>
                                     <span
+                                        type="button"
                                         v-if="beforcheck" 
                                         @click="invit_item()"
-                                        class="right">
+                                        class="right"
+                                        id="liveToastBtn">
                                             <i  class="fa-solid fa-person-circle-plus"></i>
                                     </span>
                                     <span
@@ -90,6 +92,7 @@ export default {
             'beforcheck':false,
             'aftercheck':false,
             'headermessage':'Create Team',
+            'list_invitations':[],
             'userName':'',
             'has_resultat':false,
             'responseUser':'',
@@ -101,9 +104,68 @@ export default {
             this.$emit("closeModal");
         },
         invit_item(){
-            console.log("send invit to "+this.responseUser);
-            this.beforcheck = false;
-            this.aftercheck = true;
+            console.log(this.list_invitations);
+            //check if responseuser is already invited;
+            if(this.list_invitations.includes(this.responseUser)===true){
+                this.$notify({
+                        type:"error",
+                        title: "Invitation User Error ",
+                        text: this.responseUser+" already invited ",
+                        position:"bottom right"
+                    });
+                this.userName = '';
+                this.has_resultat = false;
+            }else{
+                this.beforcheck = false;
+                this.aftercheck = true;
+                console.log("send invit to "+this.responseUser);
+                this.list_invitations.push(this.responseUser);
+                console.log(this.list_invitations);
+                
+                this.$moshaToast(
+                    {
+                        title: 'invitation sent ',
+                        description: "Press coming up to cancel the invitation."
+                    },
+                    {
+                        timeout: 250000000,
+                        hideProgressBar: 'true',
+                        showIcon: 'true',
+                        toastBackgroundColor: 'transparant',
+                        type: 'success',
+                        transition: 'bounce',
+                        position: 'bottom-right',
+                        onClose :()=>{
+                            console.log("close "+this.responseUser);
+                            //get the current index:
+                            let index = this.list_invitations.indexOf(this.responseUser);
+                            console.log(index);
+                            //delet item from the list:
+                            this.$notify({
+                                type:"success",
+                                title: "Invitation deleted ",//have problem about name index is fixed =>error displaying to be fixed 
+                                text: "Your"+this.list_invitations[index]+" invite has been successfully removed.",
+                                position:"bottom right"
+                            });
+                            this.list_invitations = this.list_invitations.filter((invit)=>{
+                                console.log(invit);
+                                return invit != this.responseUser;
+                            });
+                            console.log(this.list_invitations);
+                            this.beforcheck = true;
+                            this.aftercheck = false;
+                            console.log(index);
+                            this.has_resultat = false;
+                            if(index === 0 && this.list_invitations.length >= 1){
+                                index +=1;    
+                            }else{
+                                index -=1;
+                            }
+                            this.responseUser = this.list_invitations[index];
+                        }
+                    }
+                 )
+            }
         },
         check_user(){
             this.has_resultat = false;
@@ -319,6 +381,9 @@ export default {
     color:#fff;
     cursor:pointer;
     font-size: 25px;
+}
+.fa-person-circle-check{
+    color:#fff;
 }
 .left{
     margin-left:5px;
