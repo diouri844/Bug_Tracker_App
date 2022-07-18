@@ -42,11 +42,17 @@
                                 <h5
                                 class="item">
                                     <i class="fa-solid fa-user"></i>
-                                    <span class="left"> {{ userName }}</span>
-                                    <span 
+                                    <span class="left"> {{ responseUser }}</span>
+                                    <span
+                                        v-if="beforcheck" 
                                         @click="invit_item()"
                                         class="right">
-                                            <i class="fa-solid fa-person-circle-plus"></i>
+                                            <i  class="fa-solid fa-person-circle-plus"></i>
+                                    </span>
+                                    <span
+                                        v-if="aftercheck"
+                                        class="right">
+                                        <i class="fa-solid fa-person-circle-check"></i>
                                     </span>
                                 </h5>
                         </div>
@@ -81,6 +87,8 @@ export default {
             'isloading2':false,
             'isfailed':false,
             'isfailed2':false,
+            'beforcheck':false,
+            'aftercheck':false,
             'headermessage':'Create Team',
             'userName':'',
             'has_resultat':false,
@@ -92,36 +100,55 @@ export default {
         CloseMe(){
             this.$emit("closeModal");
         },
+        invit_item(){
+            console.log("send invit to "+this.responseUser);
+            this.beforcheck = false;
+            this.aftercheck = true;
+        },
         check_user(){
             this.has_resultat = false;
+            this.beforcheck = true;
+            this.aftercheck = false;
             if(this.userName.length=== 0 ||  /\s/.test(this.userName)){
                 this.$notify({
                         type:"error",
-                        title: "Search Team Error ",
+                        title: "Search User Error ",
                         text: "User name cannot be empty or contain spaces",
                         position:"bottom right"
                     });
                 this.userName = '';
             }else{
-                this.isloading2 = true;
-                axios.get("http://127.0.0.1:5000/get-all-project/User/"+this.userName)
-                .then(response => {
-                    this.isloading2 = false;
-                    console.log(response.data.reponse_data);
-                    if(response.data.reponse_data.length===0){
-                        this.isfailed2 = true;
-                        setTimeout(()=>{
-                            this.isfailed2 = false;
-                            this.userName = '';
-                        },1500);
-                    }else{
-                        this.responseUser = response.data.reponse_data[0];
-                        this.has_resultat = true;
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                })
+                //check if user target is the connected user :
+                if(this.userName === this.User){
+                    this.$notify({
+                        type:"error",
+                        title: "Search User Error ",
+                        text: "There's no way you can send yourself an invitation.",
+                        position:"bottom right"
+                    });
+                    this.userName = '';
+                }else{
+                    this.isloading2 = true;
+                    axios.get("http://127.0.0.1:5000/check/user/"+this.userName)
+                    .then(response => {
+                        this.isloading2 = false;
+                        console.log(response.data);
+                        if(response.data.state===1){
+                            this.beforcheck = true;
+                            this.has_resultat = true;
+                            this.responseUser = this.userName
+                        }else{
+                            this.isfailed2 = true;
+                            setTimeout(()=>{
+                                this.isfailed2 = false;
+                                this.userName = '';
+                            },1500);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
+                }
             }
         }
         ,check_team(){

@@ -122,7 +122,16 @@ def fetch_data_endpoint(subject,key):
         message_response = "fetch data from dba : get subject not enable yet "
     return jsonify({"message": message_response,"reponse_data":project_list})
 
-
+@my_app.route("/check/user/<key>",methods=["GET"])
+@cross_origin()
+def check_user_data(key):
+    response_message = ""
+    check_response = get_user_data(key)
+    if check_response == 1:
+        response_message = "accounrt exist "
+    else:
+        response_message = "we can not find user :( "
+    return jsonify({"message":response_message,"state":check_response})
 
 
 

@@ -69,6 +69,32 @@ def create_user_document(user_fname,user_lname,user_email,user_password):
         response = e
     return response
 
+def get_user_data(user_key):
+    # user_key : user_fname, user_lname:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    response = 0
+    try:
+        user_check = list(my_db.User.find({'$or':[
+            {'userFname':user_key},
+            {'userLname':user_key}
+        ]},
+        {'_id':0}
+        ))
+        if len(user_check)== 1:
+            response = 1
+    except Exception as e:
+        print("[Error]: "+str(object=e))
+        response = -1
+    
+    return response
+
+
+
 # ============= All projects functions services :
 
 def get_project_user(user_target):
