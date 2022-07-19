@@ -58,6 +58,29 @@
                                     </span>
                                 </h5>
                         </div>
+                        <div
+                        v-show="has_liste_invit"
+                            class="result_team_invit">
+                                <h4> {{ list_invitations.length }} invitations  : </h4>
+                                <h6
+                                v-for="(invit,index) in list_invitations" :key="index"
+                                class="item">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span class="left"> {{ invit }} invited to <span class="teamname">{{ teamName }}</span></span>
+                                    <span
+                                        type="button"
+                                        @click="delet_invit_item(index)"
+                                        class="right">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </span>
+                                </h6>
+                                <button
+                                @click="send_invitation()" 
+                                class="btn btn-outline-danger btn-sm">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Create Team
+                                </button>
+                        </div>
                         <div v-show="isloading2" class="loading_message">
                                 <h1> Hum something loud while others stare .......  </h1>
                         </div>
@@ -93,6 +116,7 @@ export default {
             'aftercheck':false,
             'headermessage':'Create Team',
             'list_invitations':[],
+            'has_liste_invit':false,
             'userName':'',
             'has_resultat':false,
             'responseUser':'',
@@ -102,6 +126,21 @@ export default {
     methods:{
         CloseMe(){
             this.$emit("closeModal");
+        },
+        send_invitation(){
+            console.log("invitation sended service ");
+            
+            // create formdata :
+            let subject = "I want you to join our team "+this.teamName;
+            let invitations_body = new FormData();
+            // parcour the invitation list :
+            this.list_invitations.forEach(user =>{
+                invitations_body.append({
+                    'from':this.User,
+                    'To':user,
+                    'Subject':subject
+                });
+            });
         },
         invit_item(){
             console.log(this.list_invitations);
@@ -120,51 +159,31 @@ export default {
                 this.aftercheck = true;
                 console.log("send invit to "+this.responseUser);
                 this.list_invitations.push(this.responseUser);
-                console.log(this.list_invitations);
-                
-                this.$moshaToast(
-                    {
-                        title: 'invitation sent ',
-                        description: "Press coming up to cancel the invitation."
-                    },
-                    {
-                        timeout: 250000000,
-                        hideProgressBar: 'true',
-                        showIcon: 'true',
-                        toastBackgroundColor: 'transparant',
-                        type: 'success',
-                        transition: 'bounce',
-                        position: 'bottom-right',
-                        onClose :()=>{
-                            console.log("close "+this.responseUser);
-                            //get the current index:
-                            let index = this.list_invitations.indexOf(this.responseUser);
-                            console.log(index);
-                            //delet item from the list:
-                            this.$notify({
-                                type:"success",
-                                title: "Invitation deleted ",//have problem about name index is fixed =>error displaying to be fixed 
-                                text: "Your"+this.list_invitations[index]+" invite has been successfully removed.",
-                                position:"bottom right"
-                            });
-                            this.list_invitations = this.list_invitations.filter((invit)=>{
-                                console.log(invit);
-                                return invit != this.responseUser;
-                            });
-                            console.log(this.list_invitations);
-                            this.beforcheck = true;
-                            this.aftercheck = false;
-                            console.log(index);
-                            this.has_resultat = false;
-                            if(index === 0 && this.list_invitations.length >= 1){
-                                index +=1;    
-                            }else{
-                                index -=1;
-                            }
-                            this.responseUser = this.list_invitations[index];
-                        }
-                    }
-                 )
+                this.has_liste_invit = false;
+                setTimeout(()=>{
+                    this.has_liste_invit = true;
+                },500);  
+            }
+        },
+        delet_invit_item(index){
+            // delet item from liste :
+            const target_user = this.list_invitations[index]
+            this.list_invitations = this.list_invitations.filter((invit)=>{
+                return invit != target_user;
+            });
+            //update ui :
+            this.$notify({
+                        type:"succses",
+                        title: "Delet invitation",
+                        text: "Invitation to "+target_user+" deleted successfully",
+                        position:"bottom right"
+            });
+            this.has_liste_invit = false;
+            if(this.list_invitations.length > 0){
+                setTimeout(()=>{
+                    this.has_liste_invit = true;
+                    this.has_resultat = false;
+                },100);
             }
         },
         check_user(){
@@ -377,6 +396,43 @@ export default {
     cursor:pointer;
     padding-left:15px;
 }
+.result_team_invit{
+    padding:10px 10px;
+    bottom: 1%;
+    top:70%;
+    position:absolute;
+    width:100%;
+    margin-top:15px;
+    color:#fff;
+}
+.result_team_invit h4{
+    border-bottom : 2px solid #eee;
+    color:#eee;
+}
+.result_team_invit .btn-outline-danger{
+    right:1%;
+    margin-top:5px;
+    position:absolute;
+}
+
+.result_team_invit .fa-solid{
+    color:#ccc;
+}
+
+.result_team_invit .left .teamname{
+    color:#ccc;
+    text-decoration:underline;
+}
+
+.result_team_invit .right:hover{
+    color:#ccc;
+    cursor:pointer;
+    font-size: 20px;
+}
+
+
+
+
 .right:hover{
     color:#fff;
     cursor:pointer;
