@@ -128,19 +128,52 @@ export default {
             this.$emit("closeModal");
         },
         send_invitation(){
+            // create team for ferst : 
+            let team_body = new FormData();
+            team_body.append('TeamName',this.teamName);
+            team_body.append('TeamManeger',this.User);
+            // send request : 
+            axios.post("http://127.0.0.1:5000/add/Team", team_body)
+            .then(response => {
+                this.$notify({
+                    type:response.data.CreateState,
+                    title: "Create Team info ",
+                    text: response.data.message,
+                    position:"bottom right"
+                })
+            })
+            .catch(error => {
+                console.error(error);
+            })
+            // send invitations for tergeted users :
             console.log("invitation sended service ");
-            
             // create formdata :
             let subject = "I want you to join our team "+this.teamName;
-            let invitations_body = new FormData();
             // parcour the invitation list :
             this.list_invitations.forEach(user =>{
-                invitations_body.append({
-                    'from':this.User,
-                    'To':user,
-                    'Subject':subject
+                let current_invit = new FormData();
+                current_invit.append('Target',this.teamName);
+                current_invit.append('Type','Team');
+                current_invit.append('from',this.User);
+                current_invit.append('To',user);
+                current_invit.append('Subject',subject);
+                //send to the backend api :
+                axios.post("http://127.0.0.1:5000/add/Invitation",current_invit)
+                .then(response => {
+                  this.$notify({
+                    type:response.data.CreateState,
+                    title: "Invite users to participate in Team info.",
+                    text: response.data.message,
+                    position:"bottom right"
+                })  
+                })
+                .catch(error => {
+                    console.error(error);
                 });
             });
+            setTimeout(()=>{
+                this.CloseMe();
+            },500);
         },
         invit_item(){
             console.log(this.list_invitations);

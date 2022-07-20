@@ -50,11 +50,20 @@ def registration():
 @my_app.route("/add/<subject>",methods=["POST"])
 @cross_origin()
 def add_data(subject):
-    list_subject_dispo = ['Project','Team']
+    list_subject_dispo = ['Project','Team','Invitation']
     message_response = ""
     state = ""
     if request.method=='POST':
         if subject in list_subject_dispo:
+            if subject == 'Invitation':
+                current_invitation = request.form.to_dict()
+                reponse_invitation_sender = send_invitation(current_invitation)
+                if reponse_invitation_sender < 0:
+                    message_response = "We can't send out the invitation to "+str(current_invitation['To'])+" try again."
+                    state = "error"
+                else:
+                    message_response = "The user "+str(current_invitation['To'])+" has been successfully logged in."
+                    state = "success"
             if subject == 'Project':
                 response_project_creator = create_project(request.form.to_dict())
                 if response_project_creator < 0:
@@ -62,6 +71,14 @@ def add_data(subject):
                     state = "error"
                 else:
                     message_response = "Project created successfully"
+                    state = "success"
+            if subject == 'Team':
+                response_team_creator = create_team(request.form.to_dict())
+                if response_team_creator < 0:
+                    message_response = "We can't get your team together right now, please try again."
+                    state = "error"
+                else:
+                    message_response = "Your team has been successful."
                     state = "success"
     return jsonify({"message": message_response,'CreateState':state})
 
@@ -83,21 +100,7 @@ def add_project_to_team():
             message_response = " add project to team project list done :) ......"
         return jsonify({"message": message_response})
 
-@my_app.route("/invitation",methods=["POST", "GET"])
-@cross_origin()
-def manage_invit():
-    if request.method == "POST":
-        response_message = ""
-        state = ""
-        current_invitation = request.form.to_dict()
-        response_add_invit = create_invitation(current_invitation)
-        if response_add_invit < 0:
-            response_message = "There is an error in sending an invitation, please try later."
-            state = "error"
-        else:
-            response_message = "Invitation sent successfully"
-            state = "success"
-    return jsonify({"message":response_message, "state":state})
+
 
 
 

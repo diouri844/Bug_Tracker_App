@@ -208,23 +208,52 @@ def add_project_team(team,project,state):
     return reponse
 
 
+# =========== All team functions services : 
 
-### invitations processe : 
-def create_invitation(invitation_dict):
-    reponse = 1
+def create_team(team_data):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    response = 1
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # insert document :
     try:
-        # get connexion with atlas mongodb:
-        path = dirname(abspath(__file__)) + '/.env'
-        load_dotenv(path)
-        connexion_uri = os.getenv('DBA_URI')
-        # get connexion with atlas mongodb :
-        my_client = MongoClient(connexion_uri)
-        my_db = my_client.BUG_TRAKER_DBA
+        my_db.Team.insert_one({
+            'TeamName':team_data['TeamName'],
+            'TeamManager':team_data['TeamManeger'],
+            'TeamGroup':[],
+            'TeamProject':[],
+            'ProjectState':[]
+        })
+    except Exception as e:
+        response = -1
+    return response
+
+
+
+
+
+# ============= invitations processe : 
+def send_invitation(invitation):
+    reponse = 1
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
         my_db.InvitationContib.insert_one({
-            'From':invitation_dict['From'],
-            'To':invitation_dict['To'],
-            'Project':invitation_dict['Project'],
-            'state':invitation_dict['State'],
+            'From':invitation['from'],
+            'To':invitation['To'],
+            'Type':invitation['Type'],
+            'Target':invitation['Target'],
+            'Subject':invitation['Subject'],
+            'State':'Sended'
         })
     except Exception as e:
         reponse = -1
