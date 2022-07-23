@@ -74,7 +74,11 @@ export default {
         },
         sendCustomTeamEvent(){
             this.$emit("addTeam");
+        },
+        sendCustomNotifevent(){
+            this.$emit("showNotifications");
         }
+
     }
     
 }

@@ -257,4 +257,23 @@ def send_invitation(invitation):
         })
     except Exception as e:
         reponse = -1
-    return reponse 
+    return reponse
+
+def get_invitation_user(user):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        invitations = list(my_db.InvitationContib.find({
+            'To':user
+        },
+        {
+            '_id':0
+        }))
+        return invitations
+    except Exception as e:
+        return -1

@@ -2,84 +2,62 @@
   <div class="main">
     <h1 class="main-title">
       <i class="fas fa-house custom-element"></i>
-       Your Home  
-       <span class="custom-element"> {{ userName }} </span>
+      Your Home
+      <span class="custom-element"> {{ userName }} </span>
     </h1>
-     <div class="search-area">
+    <div class="search-area">
       <button class="search-btn-start" v-bind:onclick="search_Now"><i class="fa-solid fa-magnifying-glass"></i></button>
-       <input type="text" placeholder="Search" class="input_search" v-model="search_input"/>
-        <select name="type" id="search_global_subject" v-model="search_subject">
-          <option class="option_item" value="Id" >Project Id</option>
-          <option class="option_item" value="User" >User </option>
-          <option class="option_item" value="Team">Team </option>
-        </select>
-     </div>
+      <input type="text" placeholder="Search" class="input_search" v-model="search_input" />
+      <select name="type" id="search_global_subject" v-model="search_subject">
+        <option class="option_item" value="Id">Project Id</option>
+        <option class="option_item" value="User">User </option>
+        <option class="option_item" value="Team">Team </option>
+      </select>
+    </div>
     <div class="btn-group">
-      <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fa-solid fa-user"></i>
-      {{ userName }}  <span class="visually-hidden">Toggle Dropdown</span>
+      <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="fa-solid fa-user"></i>
+        {{ userName }} <span class="visually-hidden">Toggle Dropdown</span>
       </button>
       <ul class="dropdown-menu">
-        <li><span class="dropdown-item" ><i class="fa-solid fa-gear"></i> Setting</span></li>
-        <li v-on:click="logout_to_home"><span class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i> Logout</span></li>
+        <li><span class="dropdown-item"><i class="fa-solid fa-gear"></i> Setting</span></li>
+        <li v-on:click="logout_to_home"><span class="dropdown-item"><i class="fa-solid fa-right-from-bracket"></i>
+            Logout</span></li>
       </ul>
     </div>
-    <UserProjectList  class="side-item" 
-                      v-if="isdefault"
-                      :User="this.userName"
-                      >
+    <UserProjectList class="side-item" v-if="isdefault" :User="this.userName">
     </UserProjectList>
     <div v-show="isloading" class="loading_message">
-      <h1> Hum something loud while others stare .......  </h1>
+      <h1> Hum something loud while others stare ....... </h1>
     </div>
     <div v-if="isfailed" class="error_message">
-      <h1> No Results Found   </h1>
+      <h1> No Results Found </h1>
       <i class="fa-solid fa-face-sad-tear"></i>
     </div>
-      <SearchResultUser 
-          @display_deafault="redirect_to_home"
-          class="side-item"
-          v-if="show_search_result"
-          v-bind:Data="search_result_data">
-        </SearchResultUser>
-    <SearchResultTeam 
-          @display_deafault_team="redirect_to_home_form_team" 
-          class="side-item" 
-          v-if="show_search_team_result" 
-          v-bind:Data="search_result_data">
+    <SearchResultUser @display_deafault="redirect_to_home" class="side-item" v-if="show_search_result"
+      v-bind:Data="search_result_data">
+    </SearchResultUser>
+    <SearchResultTeam @display_deafault_team="redirect_to_home_form_team" class="side-item"
+      v-if="show_search_team_result" v-bind:Data="search_result_data">
     </SearchResultTeam>
-    <SearchResultId 
-          @display_deafault_id="redirect_to_home_from_id" 
-          class="side-item" 
-          v-if="show_search_Id_result" 
-          v-bind:Data="search_result_data">
+    <SearchResultId @display_deafault_id="redirect_to_home_from_id" class="side-item" v-if="show_search_Id_result"
+      v-bind:Data="search_result_data">
     </SearchResultId>
-    <FoterTool 
-          v-if="isdefault"
-          class="footer-comp"
-          @addProject="addNewProject = true"
-          @addContrib="invitContrib = true"
-          @UpdateProject="updateProject = true"
-          @addTeam="addTeam = true">
+    <FoterTool v-if="isdefault" class="footer-comp" @addProject="addNewProject = true" @addContrib="invitContrib = true"
+      @UpdateProject="updateProject = true" @addTeam="addTeam = true" @showNotifications="DisplayNotifications">
     </FoterTool>
-    <CreateProject  v-bind:User="userName" 
-                    v-if="addNewProject" 
-                    @closeModal="force_closing_modal"
-                    >
+    <CreateProject v-bind:User="userName" v-if="addNewProject" @closeModal="force_closing_modal">
     </CreateProject>
-    <InviteContribe   v-if="invitContrib"
-                      @closeModal="force_closing_modal"
-                      v-bind:User="userName"
-    >
+    <InviteContribe v-if="invitContrib" @closeModal="force_closing_modal" v-bind:User="userName">
     </InviteContribe>
-    <UpdateProjectInfo v-if="updateProject"
-                      @closeModal="force_closing_modal"
-                      v-bind:User="userName">
+    <UpdateProjectInfo v-if="updateProject" @closeModal="force_closing_modal" v-bind:User="userName">
     </UpdateProjectInfo>
-    <CreateTeam v-if="addTeam"
-                @closeModal="force_closing_modal"
-                v-bind:User="userName">
+    <CreateTeam v-if="addTeam" @closeModal="force_closing_modal" v-bind:User="userName">
     </CreateTeam>
+    <UserInvitationsListe class="side-item"  v-if="showInvitations" @closeMe="force_closing_modal"
+      v-bind:User="userName">
+    </UserInvitationsListe>
   </div>
 </template>
 
@@ -94,6 +72,7 @@ import CreateProject from "@/components/CreateProject.vue"
 import  InviteContribe from "@/components/InviteContribe.vue"
 import UpdateProjectInfo from "@/components/UpdateProjectInfo.vue"
 import CreateTeam from "@/components/CreateTeam.vue"
+import UserInvitationsListe from "@/components/UserInvitationsListe.vue"
 import axios from 'axios'
 
 
@@ -113,7 +92,8 @@ export default {
       CreateProject,
       InviteContribe,
       UpdateProjectInfo,
-      CreateTeam
+      CreateTeam,
+      UserInvitationsListe
     },
     data(){
       return{
@@ -130,6 +110,8 @@ export default {
         "invitContrib":false,
         "updateProject":false,
         "addTeam":false,
+        "showInvitations":false,
+        'search_dispo':true,
         "currentUserData":''
       }
     },
@@ -150,14 +132,21 @@ export default {
         this.show_search_Id_result = false;
         this.isdefault = true;
       },
+      DisplayNotifications(){
+        this.isdefault = false;
+        //this.search_dispo = false;
+        this.showInvitations = true;
+      },
       force_closing_modal(){
         this.isdefault = false;
         this.addNewProject = false;
         this.invitContrib =false;
         this.updateProject = false;
         this.addTeam = false;
+        this.showInvitations = false;
         //this.isloading = true;
         setTimeout(()=>{
+          //this.search_dispo = true;
           this.isdefault = true;
         },500);
         this.$forceUpdate();

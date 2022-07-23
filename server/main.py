@@ -107,7 +107,7 @@ def add_project_to_team():
 @my_app.route("/get-all-project/<subject>/<key>",methods=["GET"])
 @cross_origin()
 def fetch_data_endpoint(subject,key):
-    subject_list_enable = ['Id','User','Team']
+    subject_list_enable = ['Id','User','Team','Invitation']
     message_response = ""
     if subject in subject_list_enable:
         # get connexion wit the dba :
@@ -120,6 +120,12 @@ def fetch_data_endpoint(subject,key):
         if subject == 'Team':
             project_list = get_project_team(key)
             print(project_list)
+        if subject == 'Invitation':
+            result = get_invitation_user(key)
+            if result != -1:
+                project_list = result
+            else:
+                project_list = []
         message_response = "fetch data from dba : get "+str(subject)+" with key :  "+str(key)
     else:
         message_response = "fetch data from dba : get subject not enable yet "
