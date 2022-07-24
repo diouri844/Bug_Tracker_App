@@ -3,10 +3,34 @@
         <div v-show="isloading" class="loading_message">
             <h4> Hum something loud while others stare ....... </h4>
         </div>
-        <div class="header" v-show="has_invitations">
-            <h5>{{ invitations.length }} Invitations for you </h5>
-            <button class="btn-close btn-light bg-light" aria-label="Close" @click="CloseMe"></button>
+        <div class="container" v-show="has_invitations">
+            <div class="header">
+                <h5>{{ invitations.length }} Invitations for you </h5>
+                <button class="btn-close btn-light bg-light" aria-label="Close" @click="CloseMe"></button>
+            </div>
+
             <!--   show liste of last notifications : -->
+            <perfect-scrollbar tag="div" class="body_tab">
+                <div v-for="(item,index) in invitations" :key="index" class="item">
+                    <div class="invitation-header">
+                        <h5 class="invitaion-sender"><i class="fa-solid fa-user-tag"></i> {{ item.From}} </h5>
+                        <h7 class="invitation-type"> {{ item.Type }} <i class="fa-solid fa-lightbulb"></i></h7>
+                    </div>
+                    <div class="invitation-body">
+                        <p class="description">
+                            {{ item.Subject }}
+                        </p>
+                    </div>
+                    <div class="invitation-footer">
+                        <button class="accept-invit"
+                        @click="accept(index)"
+                        ><i class="fa-solid fa-check"></i></button>
+                        <button class="refuse-invit"
+                        @click="refuse(index)"
+                        ><i class="fa-solid fa-ban"></i></button>
+                    </div>
+                </div>
+            </perfect-scrollbar>
         </div>
         <div class="error_message" v-show="no_invitations">
             <h1> No notification found at the moment. </h1>
@@ -61,6 +85,33 @@ export default {
     methods:{
         CloseMe(){
             this.$emit("closeMe");
+        },
+        accept(index){
+            console.log(index, "accept invitation from ", this.invitations[index].Target);
+            // filter array :
+            let i = 0;
+            this.invitations = this.invitations.filter((invit)=>{
+                return invit.Target != this.invitations[i].Target;
+            })
+            this.has_invitations = false;
+            this.isloading = true;
+            setTimeout(()=>{
+                this.isloading = false;
+                this.has_invitations = true;
+            },500);
+        },
+        refuse(index){
+            console.log(index, "refuse invitation from ", this.invitations[index].Target);
+            let i = 0;
+            this.invitations = this.invitations.filter((invit) => {
+                return invit.Target != this.invitations[i].Target;
+            })
+            this.has_invitations = false;
+            this.isloading = true;
+            setTimeout(() => {
+                this.isloading = false;
+                this.has_invitations = true;
+            }, 500);
         }
     }
 }
@@ -78,23 +129,85 @@ export default {
 
 
 
-.header{
+
+
+.body_tab{
+    max-height:700px;
+}
+
+.item{
+    margin-top: 15px;
+    border-top: 1px solid #ccc;
+    padding: 10px 10px;
+}
+
+.invitaion-sender, .invitaion-type{
+    color:#fff;
+}
+
+.description{
+    border-left: 5px solid #fff;
+    text-align: left;
+    text-transform: capitalize;
+    font-weight:bold;
+    padding-left: 3px;
+}
+
+.invitation-body{
+    margin-top:7px;
+}
+
+.header , .invitation-header, .invitation-footer {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
 }
+.invitation-footer{
+    justify-content: right;
+}
+
+
+
+.accept-invit{
+    background-color:transparent;
+    border:1px solid #fff;
+    color:#ccc;
+    border-radius: 5px;
+    margin-right:5px;
+    padding-left:15px;
+    padding-right:15px;
+}
+.accept-invit:hover{
+    background-color:#ccc;
+    color:#fff;
+    border:none;
+}
+.refuse-invit{
+    background-color: #202131;
+    color:#eee;
+    border:none;
+    outline:none;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.refuse-invit:hover{
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #ccc;
+}
+
 .container {
-    max-width: 700px;
+    max-width: 900px;
     padding: 10px 10px;
     margin-top: 8px;
-    margin-left:17%;
     left:0;
     border-radius: 15px;
     color:#ccc;
     background-color: transparent;
 }
 .error_message{
-    width: 4000px;
+    width: 1000px;
     padding: 10px 10px;
     margin-top: 8px;
     display: flex;
@@ -133,4 +246,7 @@ export default {
     border-radius: 15px;
     outline: none;
 }
+
+
+
 </style>
