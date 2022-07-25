@@ -2,6 +2,8 @@ from flask import jsonify
 from dotenv import load_dotenv
 from os.path import dirname, abspath
 from pymongo import MongoClient
+# importing ObjectId from bson library
+from bson.objectid import ObjectId
 import os
 
 
@@ -247,14 +249,24 @@ def send_invitation(invitation):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        my_db.InvitationContib.insert_one({
-            'From':invitation['from'],
-            'To':invitation['To'],
-            'Type':invitation['Type'],
-            'Target':invitation['Target'],
-            'Subject':invitation['Subject'],
-            'State':'Sended'
-        })
+        if invitation['state']:
+            my_db.InvitationContib.insert_one({
+                'From':invitation['from'],
+                'To':invitation['To'],
+                'Type':invitation['Type'],
+                'Target':invitation['Target'],
+                'Subject':invitation['Subject'],
+                'State':invitation['State']
+            })
+        else:
+            my_db.InvitationContib.insert_one({
+                'From':invitation['from'],
+                'To':invitation['To'],
+                'Type':invitation['Type'],
+                'Target':invitation['Target'],
+                'Subject':invitation['Subject'],
+                'State':'Sended'
+            })
     except Exception as e:
         reponse = -1
     return reponse
@@ -276,4 +288,28 @@ def get_invitation_user(user):
         }))
         return invitations
     except Exception as e:
+        return -1
+
+def update_invit(invitation,state):
+    print("target invitation : ",invitation)
+    # get connexion with atlas mongodb :
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # try update state :
+    try:
+        my_db.InvitationContib.update_one({
+            'From':invitation['From'],
+            'Type':invitation['Type'],
+            'Target':invitation['Target']
+        },{
+            "$set":{
+                'State':state
+            }
+        })
+        return 1
+    except Exception as e:
+        print("[ update_invit Error ] : "+str(e))
         return -1

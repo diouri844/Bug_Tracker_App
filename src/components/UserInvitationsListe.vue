@@ -64,8 +64,8 @@ export default {
                 }, 2500);
             }else{
                 // we have invitations to display:
-                console.log(response.data);
                 this.invitations = response.data.reponse_data;
+                console.log(this.invitations);
                 this.has_invitations = true;
             }
         })
@@ -87,7 +87,28 @@ export default {
             this.$emit("closeMe");
         },
         accept(index){
-            console.log(index, "accept invitation from ", this.invitations[index].Target);
+            console.log(index, "accept invitation from ", this.invitations[index]);
+            let invit_data  = new FormData();
+            invit_data.append("From", this.invitations[index]['From']);
+            invit_data.append("Type", this.invitations[index]['Type']);
+            invit_data.append("To", this.invitations[index]['To']);
+            invit_data.append("Target", this.invitations[index]['Target']);
+
+            console.log("send :  ",invit_data);
+            // sendrequest to back-end end-point
+            axios.post("http://127.0.0.1:5000/update/Invitation/Accept",invit_data)
+            .then(response => {
+                console.log(response.data);
+                this.$notify({
+                    type: response.data.state,
+                    title: "Notification ",
+                    text: response.data.message,
+                    position: "bottom right"
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            })
             // filter array :
             let i = 0;
             this.invitations = this.invitations.filter((invit)=>{
@@ -102,6 +123,21 @@ export default {
         },
         refuse(index){
             console.log(index, "refuse invitation from ", this.invitations[index].Target);
+            // send refuse request to the end-point :
+            axios.post("http://127.0.0.1:5000/update/Invitation/Refuse",this.invitations[index])
+            .then(response => {
+                console.log(response.data);
+                this.$notify({
+                    type: response.data.state,
+                    title: "Notification ",
+                    text: response.data.message,
+                    position: "bottom right"
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+            // update ui :
             let i = 0;
             this.invitations = this.invitations.filter((invit) => {
                 return invit.Target != this.invitations[i].Target;

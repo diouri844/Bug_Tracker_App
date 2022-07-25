@@ -101,6 +101,44 @@ def add_project_to_team():
         return jsonify({"message": message_response})
 
 
+@my_app.route("/update/Invitation/<state>", methods=["POST"])
+@cross_origin()
+def update_invitation(state):
+    if request.method == 'POST':
+        state_dispo = ['Accept','Refuse']
+        if state in state_dispo:
+            target_invitation = request.form.to_dict()
+            # update state of notification :
+            update_invit_state = update_invit(target_invitation, state)
+            # check return state :
+            if update_invit_state == 1:
+                response_message = "Invitation status updated successfully."
+                response_state="succses"
+                if state ==  'Accept':
+                    reponse_user = target_invitation['To']+" accept your invitation" 
+                else:
+                    reponse_user = target_invitation['To']+" has a different commitment in the present time."
+                reponse_to_current_invitation = {
+                    'from':target_invitation['To'],
+                    'To':target_invitation['From'],
+                    'Type':target_invitation['Type'],
+                    'Subject':reponse_user,
+                    'State':state
+                }
+                print('\n response : ',reponse_to_current_invitation)
+                #add this invitation : 
+                add_reponse_invit = send_invitation(reponse_to_current_invitation)
+                #delet current invitation:
+            else:
+                response_message = "Error updating the status on the invitation."
+                response_state = "error"
+            #generate new Notification to display response to the sender user :
+            
+            return jsonify({"message":response_message,"state":response_state})
+
+
+
+
 
 
 
