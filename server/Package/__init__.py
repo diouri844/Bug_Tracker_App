@@ -234,9 +234,30 @@ def create_team(team_data):
         response = -1
     return response
 
-
-
-
+def add_user_to_team(user_target,team_target):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    response = 1
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # try  update contrib liste :
+    try:
+        my_db.Team.update_one({
+            #filter:
+            'TeamName':team_target
+        },{
+            #update scope:
+            '$addToSet':{
+                'TeamGroup':user_target
+            }
+        })
+    except Exception as e:
+        print("[add user to team contrib error ] : "+str(e))
+        response = -1
+    return response
 
 # ============= invitations processe : 
 def send_invitation(invitation):
@@ -249,7 +270,7 @@ def send_invitation(invitation):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        if invitation['state']:
+        if 'State' in invitation:
             my_db.InvitationContib.insert_one({
                 'From':invitation['from'],
                 'To':invitation['To'],
@@ -268,6 +289,7 @@ def send_invitation(invitation):
                 'State':'Sended'
             })
     except Exception as e:
+        print("add invit error : "+str(e))
         reponse = -1
     return reponse
 
@@ -291,7 +313,6 @@ def get_invitation_user(user):
         return -1
 
 def update_invit(invitation,state):
-    print("target invitation : ",invitation)
     # get connexion with atlas mongodb :
     path = dirname(abspath(__file__)) + '/.env'
     load_dotenv(path)
@@ -313,3 +334,36 @@ def update_invit(invitation,state):
     except Exception as e:
         print("[ update_invit Error ] : "+str(e))
         return -1
+
+def delet_invitation(invitation):
+    # get connexion with atlas mongodb :
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    # try delet- invitation :
+    try:
+        my_db.InvitationContib.delete_one({
+            # filter : 
+            'From':invitation['From'],
+            'Type':invitation['Type'],
+            'Target':invitation['Target'],
+            'To':invitation['To']
+        })
+    except Exception as e:
+        print("[ delet invitation error ] : "+str(e))
+    return
+
+def drup_all_invitation(user):
+    # get connexion with atlas mongodb :
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        my_db.InvitationContib.delete_many({'To':user})
+    except Exception as e:
+        print("[clear all invitations error ] : "+str(e))
+    return

@@ -101,7 +101,7 @@ def add_project_to_team():
         return jsonify({"message": message_response})
 
 
-@my_app.route("/update/Invitation/<state>", methods=["POST"])
+@my_app.route("/update/Invitation/<state>", methods=["POST","DELETE"])
 @cross_origin()
 def update_invitation(state):
     if request.method == 'POST':
@@ -116,25 +116,43 @@ def update_invitation(state):
                 response_state="succses"
                 if state ==  'Accept':
                     reponse_user = target_invitation['To']+" accept your invitation" 
+                    # add user target to team contributors list :
+                    reponse_push_user = add_user_to_team(target_invitation['To'],target_invitation['Target'])
+                    if reponse_push_user == 1:
+                        #create new custom invitation :
+                        push_invitation = {
+                            'from':target_invitation['Target'],
+                            'To':target_invitation['From'],
+                            'Type':target_invitation['Type'],
+                            'Target':target_invitation['Target'],
+                            'Subject':target_invitation['To']+" join "+target_invitation['Target'],
+                            'State':state        
+                        }
+                        push_reponse_invit = send_invitation(push_invitation)
+                        print(push_reponse_invit,push_invitation)     
                 else:
                     reponse_user = target_invitation['To']+" has a different commitment in the present time."
                 reponse_to_current_invitation = {
                     'from':target_invitation['To'],
                     'To':target_invitation['From'],
                     'Type':target_invitation['Type'],
+                    'Target':target_invitation['Target'],
                     'Subject':reponse_user,
                     'State':state
                 }
-                print('\n response : ',reponse_to_current_invitation)
                 #add this invitation : 
                 add_reponse_invit = send_invitation(reponse_to_current_invitation)
                 #delet current invitation:
+                delet_invitation(target_invitation)
             else:
                 response_message = "Error updating the status on the invitation."
                 response_state = "error"
             #generate new Notification to display response to the sender user :
-            
-            return jsonify({"message":response_message,"state":response_state})
+        return jsonify({"message":response_message,"state":response_state})
+    if request.method == "DELETE":
+        # clear all notifications :
+        drup_all_invitation(state)
+        return jsonify({"message":"all done "})
 
 
 

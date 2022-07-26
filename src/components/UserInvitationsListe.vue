@@ -10,24 +10,22 @@
             </div>
 
             <!--   show liste of last notifications : -->
-            <perfect-scrollbar tag="div" class="body_tab">
+            <perfect-scrollbar class="body_tab">
                 <div v-for="(item,index) in invitations" :key="index" class="item">
                     <div class="invitation-header">
                         <h5 class="invitaion-sender"><i class="fa-solid fa-user-tag"></i> {{ item.From}} </h5>
-                        <h7 class="invitation-type"> {{ item.Type }} <i class="fa-solid fa-lightbulb"></i></h7>
+                        <h7 class="invitation-type"> {{ item.Type }} : {{ item.Target }}
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </h7>
                     </div>
                     <div class="invitation-body">
                         <p class="description">
                             {{ item.Subject }}
                         </p>
                     </div>
-                    <div class="invitation-footer">
-                        <button class="accept-invit"
-                        @click="accept(index)"
-                        ><i class="fa-solid fa-check"></i></button>
-                        <button class="refuse-invit"
-                        @click="refuse(index)"
-                        ><i class="fa-solid fa-ban"></i></button>
+                    <div class="invitation-footer" v-if="item.State === 'Sended'">
+                        <button class="accept-invit" @click="accept(index)"><i class="fa-solid fa-check"></i></button>
+                        <button class="refuse-invit" @click="refuse(index)"><i class="fa-solid fa-ban"></i></button>
                     </div>
                 </div>
             </perfect-scrollbar>
@@ -85,6 +83,11 @@ export default {
     methods:{
         CloseMe(){
             this.$emit("closeMe");
+            // clear all notifications : 
+            axios.delete("http://127.0.0.1:5000/update/Invitation/"+this.User)
+            .then(response => {
+                console.log(response.data);
+            }).catch(error => { console.error(error);})
         },
         accept(index){
             console.log(index, "accept invitation from ", this.invitations[index]);
@@ -93,7 +96,6 @@ export default {
             invit_data.append("Type", this.invitations[index]['Type']);
             invit_data.append("To", this.invitations[index]['To']);
             invit_data.append("Target", this.invitations[index]['Target']);
-
             console.log("send :  ",invit_data);
             // sendrequest to back-end end-point
             axios.post("http://127.0.0.1:5000/update/Invitation/Accept",invit_data)
@@ -122,9 +124,15 @@ export default {
             },500);
         },
         refuse(index){
-            console.log(index, "refuse invitation from ", this.invitations[index].Target);
+            console.log(index, "refuse invitation from ", this.invitations[index]);
+            let invit_data = new FormData();
+            invit_data.append("From", this.invitations[index]['From']);
+            invit_data.append("Type", this.invitations[index]['Type']);
+            invit_data.append("To", this.invitations[index]['To']);
+            invit_data.append("Target", this.invitations[index]['Target']);
+            console.log("send :  ", invit_data);
             // send refuse request to the end-point :
-            axios.post("http://127.0.0.1:5000/update/Invitation/Refuse",this.invitations[index])
+            axios.post("http://127.0.0.1:5000/update/Invitation/Refuse",invit_data)
             .then(response => {
                 console.log(response.data);
                 this.$notify({
@@ -157,24 +165,15 @@ export default {
 
 <style scoped>
 
-
-
-
-
-
-
-
-
-
-
 .body_tab{
-    max-height:700px;
+    height: 400px;
 }
 
 .item{
     margin-top: 15px;
     border-top: 1px solid #ccc;
     padding: 10px 10px;
+    height:auto;
 }
 
 .invitaion-sender, .invitaion-type{
