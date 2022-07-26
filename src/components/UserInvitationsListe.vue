@@ -96,6 +96,10 @@ export default {
             invit_data.append("Type", this.invitations[index]['Type']);
             invit_data.append("To", this.invitations[index]['To']);
             invit_data.append("Target", this.invitations[index]['Target']);
+            if(this.invitations[index]['Type'] === 'Project'){
+                // we have some meta data : 
+                invit_data.append('TeamName', this.invitations[index]['TeamName']);
+            }
             console.log("send :  ",invit_data);
             // sendrequest to back-end end-point
             axios.post("http://127.0.0.1:5000/update/Invitation/Accept",invit_data)
@@ -124,13 +128,11 @@ export default {
             },500);
         },
         refuse(index){
-            console.log(index, "refuse invitation from ", this.invitations[index]);
             let invit_data = new FormData();
             invit_data.append("From", this.invitations[index]['From']);
             invit_data.append("Type", this.invitations[index]['Type']);
             invit_data.append("To", this.invitations[index]['To']);
             invit_data.append("Target", this.invitations[index]['Target']);
-            console.log("send :  ", invit_data);
             // send refuse request to the end-point :
             axios.post("http://127.0.0.1:5000/update/Invitation/Refuse",invit_data)
             .then(response => {

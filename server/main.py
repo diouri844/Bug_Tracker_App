@@ -115,21 +115,44 @@ def update_invitation(state):
                 response_message = "Invitation status updated successfully."
                 response_state="succses"
                 if state ==  'Accept':
-                    reponse_user = target_invitation['To']+" accept your invitation" 
-                    # add user target to team contributors list :
-                    reponse_push_user = add_user_to_team(target_invitation['To'],target_invitation['Target'])
-                    if reponse_push_user == 1:
-                        #create new custom invitation :
-                        push_invitation = {
-                            'from':target_invitation['Target'],
-                            'To':target_invitation['From'],
-                            'Type':target_invitation['Type'],
-                            'Target':target_invitation['Target'],
-                            'Subject':target_invitation['To']+" join "+target_invitation['Target'],
-                            'State':state        
-                        }
-                        push_reponse_invit = send_invitation(push_invitation)
-                        print(push_reponse_invit,push_invitation)     
+                    # check if target is an team :
+                    if target_invitation['Type'] == 'Team':
+                        reponse_user = target_invitation['To']+" accept your invitation" 
+                        # add user target to team contributors list :
+                        reponse_push_user = add_user_to_team(target_invitation['To'],target_invitation['Target'])
+                        if reponse_push_user == 1:
+                            #create new custom invitation :
+                            push_invitation = {
+                                'from':target_invitation['Target'],
+                                'To':target_invitation['From'],
+                                'Type':target_invitation['Type'],
+                                'Target':target_invitation['Target'],
+                                'Subject':target_invitation['To']+" join "+target_invitation['Target'],
+                                'State':state        
+                            }
+                            push_reponse_invit = send_invitation(push_invitation)
+                            print(push_reponse_invit,push_invitation)
+                    # check if target if  project : 
+                    if target_invitation['Type'] ==  'Project':
+                        reponse_user = target_invitation['To']+" accept your invitation" 
+                        # add user target to team contributors list : 
+                        list_contrib = get_contributors(target_invitation['TeamName'])
+                        print(list_contrib)
+                        if len(list_contrib)!=0:
+                            response_push_contributors = add_contribs_to_project(target_invitation['Target'],list_contrib)
+                            if response_push_contributors == 1:
+                                # add contributors list successfully :
+                                #create new custom invitation :
+                                # to update later :
+                                push_invitation = {
+                                    'from':target_invitation['Target'],
+                                    'To':target_invitation['From'],
+                                    'Type':target_invitation['Type'],
+                                    'Target':target_invitation['Target'],
+                                    'Subject':target_invitation['To']+" join "+target_invitation['Target'],
+                                    'State':state        
+                                }
+                            push_reponse_invit = send_invitation(push_invitation)
                 else:
                     reponse_user = target_invitation['To']+" has a different commitment in the present time."
                 reponse_to_current_invitation = {

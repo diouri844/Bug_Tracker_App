@@ -91,6 +91,7 @@ export default {
             "isloading":false,
             "isfailed":false,
             "has_resultat":false,
+            'teammanager':'',
             "projectname":'',
             "projectdescrib":'',
             "projectsdate":'',
@@ -177,13 +178,15 @@ export default {
         },
         addteam(){
             this.selectedTeam = this.teamsearchresult.TeamName;
+            this.teammanager = this.teamsearchresult.TeamManager;
             let project_data = new FormData();
             project_data.append('Name',this.projectname);
             project_data.append('Describ',this.projectdescrib);
             project_data.append('Sdate',this.projectsdate);
             project_data.append('Edate',this.projectedate);
             project_data.append('Team',this.selectedTeam);
-            project_data.append('Contributors',this.teamsearchresult.TeamGroup);
+            project_data.append('Contributors',[]);
+            //
             project_data.append('State',this.projectstate);
             project_data.append('Owner',this.User);
             this.step2 = false;
@@ -200,18 +203,41 @@ export default {
                         text: response.data.message,
                         position:"bottom right"
                     });
+                    // send custom invitation to team manager : 
+                    let my_custom_invit = new FormData();
+                    // append data :
+                    my_custom_invit.append('from',this.User);
+                    my_custom_invit.append('To',this.teammanager);
+                    my_custom_invit.append('Type','Project');
+                    my_custom_invit.append('Target', this.projectname);
+                    my_custom_invit.append('Subject','I want you to give us a hand with '+this.projectname);
+                    my_custom_invit.append('State','Sended');
+                    my_custom_invit.append('TeamName',this.selectedTeam);
+                    // sned request : 
+                    axios.post("http://127.0.0.1:5000/add/Invitation",my_custom_invit)
+                    .then(response => {
+                        this.$notify({
+                            type: response.data.state,
+                            title: "Invite " + this.selectedTeam +" manager ",
+                            text: response.data.message_response,
+                            position: "bottom right"
+                        });
+                    })
+                    .catch(error => { 
+                        console.error(error);
+                    })
                     // add project name to the team selected :
                     let team_project_state = new FormData();
                     team_project_state.append("Team",this.selectedTeam);
                     team_project_state.append("Project",this.projectname);
                     team_project_state.append("State",this.projectstate);
-                    axios.post("http://127.0.0.1:5000/add/Team/Project",team_project_state)
+                    /*axios.post("http://127.0.0.1:5000/add/Team/Project",team_project_state)
                         .then(response =>{
                             console.log(response);
                         })
                         .catch(error=>{
                             console.error(error);
-                        });
+                        });*/
                 }else{
                     this.$notify({
                         type:"error",

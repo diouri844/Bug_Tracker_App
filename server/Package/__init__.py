@@ -139,6 +139,31 @@ def get_project_team(team_target):
         }))
     return results
 
+
+def add_contribs_to_project(project,list_contrib):
+    # define cofig vars : 
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        # get team name 
+        my_db.Project.update_one({
+            # filter :
+            'Name':project
+        },
+        {
+            '$set':{
+                'TeamGroup':list_contrib
+            }
+        })
+        return 1
+    except Exception as e:
+        print("[ add contrib to project error ] : "+str(e))
+        return -1
+
 def get_project_Id(key):
     path = dirname(abspath(__file__)) + '/.env'
     load_dotenv(path)
@@ -258,6 +283,29 @@ def add_user_to_team(user_target,team_target):
         print("[add user to team contrib error ] : "+str(e))
         response = -1
     return response
+
+def get_contributors(team):
+    # define cofig vars : 
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        return list(my_db.Team.find_one({
+            # filter :
+            'TeamName':team   
+        },{
+            '_id':0,
+            'TeamGroup':1
+        }))
+    except Exception as e:
+        print("[error get tema contribs ]:  "+str(e))
+        return [] 
+
+
+
 
 # ============= invitations processe : 
 def send_invitation(invitation):
