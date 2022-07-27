@@ -14,13 +14,11 @@ my_app.config['CORS_HEADERS'] = 'Content-Type'
 def authentification():
     if request.method == "POST":
         data = request.form.to_dict()
-        print("server authentification is loaded !! ")
         user_name = data['name']
         user_email = data['email']
         user_pswd = data['pswd']
         connexion_state = 0
         response = get_connexion_details(user_name,user_email,user_pswd)
-        print(response)
         if response == "welcom back again  "+str(user_name):
             connexion_state = 1
         return jsonify({"message":response,"statelogin":connexion_state})
@@ -88,7 +86,6 @@ def add_project_to_team():
     if request.method == "POST":
         message_response = ""
         data = request.form.to_dict()
-        print(data)
         team_name = data['Team']
         project_name = data['Project']
         project_state = data['State']
@@ -136,8 +133,9 @@ def update_invitation(state):
                     if target_invitation['Type'] ==  'Project':
                         reponse_user = target_invitation['To']+" accept your invitation" 
                         # add user target to team contributors list : 
+                        print("\n \n  target :      ",target_invitation)
                         list_contrib = get_contributors(target_invitation['TeamName'])
-                        print(list_contrib)
+                        print("liste contributors :",list_contrib)
                         if len(list_contrib)!=0:
                             response_push_contributors = add_contribs_to_project(target_invitation['Target'],list_contrib)
                             if response_push_contributors == 1:
@@ -152,7 +150,8 @@ def update_invitation(state):
                                     'Subject':target_invitation['To']+" join "+target_invitation['Target'],
                                     'State':state        
                                 }
-                            push_reponse_invit = send_invitation(push_invitation)
+                                #invitation state error to be fixed 
+                            push_reponse_invit = update_invit(push_invitation,state)
                 else:
                     reponse_user = target_invitation['To']+" has a different commitment in the present time."
                 reponse_to_current_invitation = {

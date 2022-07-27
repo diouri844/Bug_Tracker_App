@@ -156,7 +156,7 @@ def add_contribs_to_project(project,list_contrib):
         },
         {
             '$set':{
-                'TeamGroup':list_contrib
+                'Contributors':list_contrib
             }
         })
         return 1
@@ -191,14 +191,11 @@ def create_project(data):
     # data is an dict:
     return_state = 1
     try:
-        contrib_array = []
-        for contrib in data['Contributors'].split(","):
-            contrib_array.append(contrib)
         my_db.Project.insert_one({
             'Name':data['Name'],
             'Team':data['Team'],
             'Owner':data['Owner'],
-            'Contributors':contrib_array,
+            'Contributors':data['Contributors'],
             'State':data['State'],
             'Discription':data['Describ'],
             'Edate':data['Edate'],
@@ -293,13 +290,16 @@ def get_contributors(team):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        return list(my_db.Team.find_one({
+        return list(my_db.Team.find({
             # filter :
             'TeamName':team   
         },{
             '_id':0,
-            'TeamGroup':1
-        }))
+            'TeamName':0,
+            'TeamManager':0,
+            'TeamProject':0,
+            'ProjectState':0
+        }))[0]['TeamGroup']
     except Exception as e:
         print("[error get tema contribs ]:  "+str(e))
         return [] 
@@ -318,16 +318,17 @@ def send_invitation(invitation):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        if 'State' in invitation:
+        if 'State' in invitation and 'TeamName' in invitation:
             my_db.InvitationContib.insert_one({
                 'From':invitation['from'],
                 'To':invitation['To'],
                 'Type':invitation['Type'],
                 'Target':invitation['Target'],
                 'Subject':invitation['Subject'],
+                'TeamName':invitation['TeamName'],
                 'State':invitation['State']
             })
-        else:
+        if not 'State' in invitation or not 'TeamName' in invitation:
             my_db.InvitationContib.insert_one({
                 'From':invitation['from'],
                 'To':invitation['To'],

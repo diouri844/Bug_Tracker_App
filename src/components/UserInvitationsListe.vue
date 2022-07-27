@@ -96,11 +96,18 @@ export default {
             invit_data.append("Type", this.invitations[index]['Type']);
             invit_data.append("To", this.invitations[index]['To']);
             invit_data.append("Target", this.invitations[index]['Target']);
-            if(this.invitations[index]['Type'] === 'Project'){
+            if (this.invitations[index]['Type'] === 'Project'){
                 // we have some meta data : 
                 invit_data.append('TeamName', this.invitations[index]['TeamName']);
+                console.log(this.invitations[index]['TeamName'])
             }
-            console.log("send :  ",invit_data);
+            console.log(
+                this.invitations[index]['From'], invit_data['From'],
+                this.invitations[index]['Type'], invit_data['Type'],
+                this.invitations[index]['To'], invit_data['To'],
+                this.invitations[index]['Target'], invit_data['Target'],
+                this.invitations[index]['TeamName'], invit_data['TeamName']
+            );
             // sendrequest to back-end end-point
             axios.post("http://127.0.0.1:5000/update/Invitation/Accept",invit_data)
             .then(response => {
