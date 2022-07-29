@@ -180,6 +180,27 @@ def get_project_Id(key):
     ))
     return results
 
+def get_project_state(key):
+    #get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        return list(my_db.Project.find({
+            #filter :
+            'Name':key
+            },{
+            'State':1
+            }))[0]['State']
+    except Exception as e:
+        print("[ Get project state Error ] : "+str(e))
+        return ""
+
+
+
 def create_project(data):
     # get connexion with atlas mongodb:
     path = dirname(abspath(__file__)) + '/.env'
@@ -213,8 +234,14 @@ def add_project_team(team,project,state):
         load_dotenv(path)
         connexion_uri = os.getenv('DBA_URI')
         # get connexion with atlas mongodb :
+        my_state = get_project_state(project)
+        print("\n Project : ",project," state :  ",my_state)
+        if my_state != "":
+            state = my_state
+            print("\n Project : ",project," state :  ",state)
         my_client = MongoClient(connexion_uri)
         my_db = my_client.BUG_TRAKER_DBA
+        
         my_db.Team.update_one({
             'TeamName':team
         },{
@@ -222,8 +249,7 @@ def add_project_team(team,project,state):
                 {
                 'TeamProject':project,
                 'ProjectState':state
-                },
-                'upsert': true
+                }
             }
         )
     except Exception as e:
@@ -318,17 +344,27 @@ def send_invitation(invitation):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        if 'State' in invitation and 'TeamName' in invitation:
-            my_db.InvitationContib.insert_one({
-                'From':invitation['from'],
-                'To':invitation['To'],
-                'Type':invitation['Type'],
-                'Target':invitation['Target'],
-                'Subject':invitation['Subject'],
-                'TeamName':invitation['TeamName'],
-                'State':invitation['State']
-            })
-        if not 'State' in invitation or not 'TeamName' in invitation:
+        if 'State' in invitation:
+            if 'TeamName' in invitation:
+                my_db.InvitationContib.insert_one({
+                    'From':invitation['from'],
+                    'To':invitation['To'],
+                    'Type':invitation['Type'],
+                    'Target':invitation['Target'],
+                    'Subject':invitation['Subject'],
+                    'TeamName':invitation['TeamName'],
+                    'State':invitation['State']
+                })
+            else:
+                my_db.InvitationContib.insert_one({
+                    'From':invitation['from'],
+                    'To':invitation['To'],
+                    'Type':invitation['Type'],
+                    'Target':invitation['Target'],
+                    'Subject':invitation['Subject'],
+                    'State':invitation['State']
+                })
+        else:  
             my_db.InvitationContib.insert_one({
                 'From':invitation['from'],
                 'To':invitation['To'],
@@ -337,6 +373,9 @@ def send_invitation(invitation):
                 'Subject':invitation['Subject'],
                 'State':'Sended'
             })
+        
+
+
     except Exception as e:
         print("add invit error : "+str(e))
         reponse = -1

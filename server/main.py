@@ -142,16 +142,21 @@ def update_invitation(state):
                                 # add contributors list successfully :
                                 #create new custom invitation :
                                 # to update later :
-                                push_invitation = {
-                                    'from':target_invitation['Target'],
-                                    'To':target_invitation['From'],
-                                    'Type':target_invitation['Type'],
-                                    'Target':target_invitation['Target'],
-                                    'Subject':target_invitation['To']+" join "+target_invitation['Target'],
-                                    'State':state        
-                                }
-                                #invitation state error to be fixed 
-                            push_reponse_invit = update_invit(push_invitation,state)
+                                for user in list_contrib:
+                                    push_invitation = {
+                                        'from':target_invitation['Target'],
+                                        'To':target_invitation['From'],
+                                        'Type':target_invitation['Type'],
+                                        'Target':target_invitation['Target'],
+                                        'Subject':user+" join "+target_invitation['Target'],
+                                        'State':''        
+                                    }
+                                    #invitation state error to be fixed 
+                                    push_reponse_invit = send_invitation(push_invitation)
+                                # add project name to team project list target is the project name :
+                                response_add_project_team= add_project_team(target_invitation['TeamName'],
+                                                                            target_invitation['Target'],'')
+                                print("\n add project to team : ",response_add_project_team)
                 else:
                     reponse_user = target_invitation['To']+" has a different commitment in the present time."
                 reponse_to_current_invitation = {
