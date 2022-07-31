@@ -95,6 +95,32 @@ def get_user_data(user_key):
     
     return response
 
+def add_user_project(user,project):
+    # define cofig vars : 
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        my_db.User.update_one({
+            # filter :
+            '$or':[{
+                'userFname':user
+            },{
+                'userLname':user
+            }]
+        },
+        {
+            '$addToSet':{
+                'projects':project
+            }
+        })
+        return 1
+    except Exception as e:
+        print("[add project to user project list Error ] :   "+str(e))
+        return -1
 
 
 # ============= All projects functions services :
@@ -118,7 +144,6 @@ def get_project_user(user_target):
     # that return a list of project :
     return project_result
 
-
 def get_project_team(team_target):
     # define cofig vars : 
     path = dirname(abspath(__file__)) + '/.env'
@@ -138,7 +163,6 @@ def get_project_team(team_target):
             '_id':0
         }))
     return results
-
 
 def add_contribs_to_project(project,list_contrib):
     # define cofig vars : 
@@ -199,8 +223,6 @@ def get_project_state(key):
         print("[ Get project state Error ] : "+str(e))
         return ""
 
-
-
 def create_project(data):
     # get connexion with atlas mongodb:
     path = dirname(abspath(__file__)) + '/.env'
@@ -257,7 +279,25 @@ def add_project_team(team,project,state):
         response = -1
     return reponse
 
-
+def remove_project(project):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    response = 0
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        my_db.Project.delete_one({
+            # filter :
+            'Name':project
+        })
+        response =  1
+    except Exception as e:
+        print("[ delet team name from project error ] : "+str(e))
+        response =  -1
+    return response
 # =========== All team functions services : 
 
 def create_team(team_data):

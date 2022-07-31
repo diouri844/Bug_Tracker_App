@@ -128,14 +128,17 @@ def update_invitation(state):
                                 'State':state        
                             }
                             push_reponse_invit = send_invitation(push_invitation)
-                            print(push_reponse_invit,push_invitation)
                     # check if target if  project : 
                     if target_invitation['Type'] ==  'Project':
-                        reponse_user = target_invitation['To']+" accept your invitation" 
+                        reponse_user = target_invitation['To']+" accept your invitation"
+                        # add project name to user project liste :
+                        # target_invitation['Target'] => project name 
+                        project_data = get_project_Id(target_invitation['Target'])
+                        owner_project = project_data[0]['Owner']
+                        # use owner to add project name to list : 
+                        response_push_project_to_user = add_user_project(owner_project,target_invitation['Target'])
                         # add user target to team contributors list : 
-                        print("\n \n  target :      ",target_invitation)
                         list_contrib = get_contributors(target_invitation['TeamName'])
-                        print("liste contributors :",list_contrib)
                         if len(list_contrib)!=0:
                             response_push_contributors = add_contribs_to_project(target_invitation['Target'],list_contrib)
                             if response_push_contributors == 1:
@@ -154,11 +157,16 @@ def update_invitation(state):
                                     #invitation state error to be fixed 
                                     push_reponse_invit = send_invitation(push_invitation)
                                 # add project name to team project list target is the project name :
-                                response_add_project_team= add_project_team(target_invitation['TeamName'],
+                                response_add_project_team = add_project_team(target_invitation['TeamName'],
                                                                             target_invitation['Target'],'')
-                                print("\n add project to team : ",response_add_project_team)
                 else:
+                    # invitation not ignored : 
                     reponse_user = target_invitation['To']+" has a different commitment in the present time."
+                    if target_invitation['Type'] ==  'Team':
+                        # remove team name from project team:
+                        response_remove_project= remove_project(target_invitation['Target'])
+                        print(response_remove_project)
+
                 reponse_to_current_invitation = {
                     'from':target_invitation['To'],
                     'To':target_invitation['From'],
