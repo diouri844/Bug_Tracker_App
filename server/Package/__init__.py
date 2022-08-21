@@ -491,7 +491,13 @@ def drup_all_invitation(user):
     my_client = MongoClient(connexion_uri)
     my_db = my_client.BUG_TRAKER_DBA
     try:
-        my_db.InvitationContib.delete_many({'To':user})
+        my_db.InvitationContib.delete_many(
+            {
+                'To':user,
+                'State':{
+                    '$in':["Accept","Refuse"]
+                }
+            })
     except Exception as e:
         print("[clear all invitations error ] : "+str(e))
     return

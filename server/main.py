@@ -161,12 +161,18 @@ def update_invitation(state):
                                                                             target_invitation['Target'],'')
                 else:
                     # invitation not ignored : 
-                    reponse_user = target_invitation['To']+" has a different commitment in the present time."
                     if target_invitation['Type'] ==  'Team':
                         # remove team name from project team:
                         response_remove_project= remove_project(target_invitation['Target'])
                         print(response_remove_project)
-
+                        # for ignoring invitation team join is done
+                    if target_invitation['Type'] ==  'Project':
+                        reponse_user = target_invitation['To']+" has a different commitment in the present time."
+                        # the current team taregt ignore invitation => project without team 
+                        # solution 1 : delete project 
+                        # solution 2: ask for new team 
+                        print(" to be continu ........")
+                # create formdata response:
                 reponse_to_current_invitation = {
                     'from':target_invitation['To'],
                     'To':target_invitation['From'],
@@ -188,11 +194,6 @@ def update_invitation(state):
         # clear all notifications :
         drup_all_invitation(state)
         return jsonify({"message":"all done "})
-
-
-
-
-
 
 
 @my_app.route("/get-all-project/<subject>/<key>",methods=["GET"])
