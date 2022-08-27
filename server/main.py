@@ -169,6 +169,9 @@ def update_invitation(state):
                     if target_invitation['Type'] ==  'Project':
                         reponse_user = target_invitation['To']+" has a different commitment in the present time."
                         # the current team taregt ignore invitation => project without team 
+                        # delete the name of team form the project attributs:
+                        response_remove_project_team_name = remove_team_from_project(target_invitation['Target'])
+                        print(response_remove_project_team_name)
                         # solution 1 : delete project 
                         # solution 2: ask for new team 
                         print(" to be continu ........")
@@ -234,8 +237,26 @@ def check_user_data(key):
         response_message = "we can not find user :( "
     return jsonify({"message":response_message,"state":check_response})
 
-
-
+@my_app.route("/delete/<subject>",methods=["POST"])
+@cross_origin()
+def delete(subject):
+    response_message = ""
+    check_response = 0
+    state_response = ""
+    subject_dispo = ["Project"]
+    if subject in subject_dispo:
+        if subject == subject_dispo[0]:
+            # delete the project with id = key.Name:
+            project_to_delete = request.form.to_dict()
+            check_response = remove_project(project_to_delete['Name'])
+            #update response_message:
+            if check_response == 1:
+                response_message = "your project has been successfully removed."
+                state_response = "succses"
+            else:
+                response_message = "your project is not deleted at the moment, please try again later."
+                state_response = "error"
+    return jsonify({"message":response_message,"state":state_response})
 
 if __name__=="__main__":
     my_app.secret_key = 'super secret key'

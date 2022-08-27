@@ -298,6 +298,30 @@ def remove_project(project):
         print("[ delet team name from project error ] : "+str(e))
         response =  -1
     return response
+def remove_team_from_project(project):
+    # get connexion with atlas mongodb:
+    path = dirname(abspath(__file__)) + '/.env'
+    load_dotenv(path)
+    response = 0
+    connexion_uri = os.getenv('DBA_URI')
+    # get connexion with atlas mongodb :
+    my_client = MongoClient(connexion_uri)
+    my_db = my_client.BUG_TRAKER_DBA
+    try:
+        my_db.Project.update_one(
+            {
+             'Name':project   
+            },
+            {
+                '$set':{
+                    'Team':'Not-found'
+                }
+            })
+        response = 1
+    except Exception as e:
+        print("[ delete tema name from project error ] : "+str(e))
+        response = -1
+    return response
 # =========== All team functions services : 
 
 def create_team(team_data):

@@ -14,10 +14,22 @@
             </div>
             <perfect-scrollbar tag="div" class="body_tab">
             <li v-for="(item,index) in Data" :key="index" class="table-row">
+                <template v-if="item.Team != 'Not-found'">
                 <div class="col col-1 col-1-data" data-label="Job Id">{{ item.Name }}</div>
                 <div class="col col-2" data-label="Customer Name">{{ item.Owner }}</div>
                 <div class="col col-3 team-name" data-label="Amount" >{{ item.Team }}</div>
                 <div class="col col-4" data-label="Payment Status">{{ item.State }}</div>
+                </template>
+                <template v-if="item.Team == 'Not-found'">
+                <div class="col col-1 col-1-data col-1-solve" data-label="Job Id"><i class="fa-solid fa-bug"></i> {{ item.Name }}</div>
+                <div class="col col-2 col-2-solve" data-label="Customer Name">{{ item.Owner }}</div>
+                <div class="col col-3 team-name team-solve" data-label="Amount" v-on:click="fix_team(item)">
+                    <i class="fa-solid fa-wrench"></i> 
+                </div>
+                <div class="col col-4 col-4-solve" data-label="Payment Status" v-on:click="delete_project(item)">
+                      <i class="fa-solid fa-trash"></i> 
+                </div>
+                </template>
             </li>
             </perfect-scrollbar>
         </ul>
@@ -82,9 +94,33 @@ import axios from "axios";
             "dontcurrentuserHasProjects":Boolean
         }
     },
-    methode:{
+    methods:{
         click_table_row(){
             console.log("row click detected ");
+        },
+        fix_team(item){
+          console.log(item.Name+" fix team problem ....");
+        },
+        delete_project(item){
+          console.log(item);
+          let project_target = new FormData();
+          project_target.append("Name",item.Name);
+          // delete the target project from local data array
+          this.Data =  this.Data.filter((project)=>{
+            return project.Name != item.Name;
+          })
+          axios.post("http://127.0.0.1:5000/delete/Project",project_target)
+          .then(response => {
+            this.$notify({
+              type:response.data.state,
+              title: "Delete Project ",
+              text: response.data.message,
+              position:"bottom right"
+            });
+          })
+          .catch(error => {
+            console.error(error);
+          });
         }
     }
     }
@@ -131,6 +167,11 @@ body {
   padding-right: 10px;
   margin-top:20px;
   height: auto;
+}
+.fa-bug{
+  font-size: 20px;
+  margin-right: 5px;
+  color:#eee;
 }
 
 .No-project-Handler{
@@ -199,7 +240,23 @@ body {
     padding:2px 1px;
     margin-right:25px;
 }
-
+.team-solve:hover{
+  color:#fff;
+  cursor: pointer;
+  font-size:18px;
+}
+.team-solve, .col-1-solve , .col-2-solve {
+  color: #0E685E;
+  background:transparent;
+}
+.col-4-solve{
+  color:#fff;
+}
+.col-4-solve:hover{
+  color:#0E685E;
+  font-size:18px;
+  cursor: pointer;
+}
 
 .responsive-table .col-1 {
     flex-basis: 25%;
