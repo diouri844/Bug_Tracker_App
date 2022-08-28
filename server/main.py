@@ -97,6 +97,22 @@ def add_project_to_team():
             message_response = " add project to team project list done :) ......"
         return jsonify({"message": message_response})
 
+@my_app.route("/update/<subject>", methods=["POST"])
+@cross_origin()
+def update_subject_custom(subject):
+    if request.method == 'POST':
+        subject_dispo = ['Team']
+        response_message = ""
+        response_state = ""
+        if subject in subject_dispo:
+            if subject == subject_dispo[0]:
+                # update team : new team to old project :
+                print("update team : new team to old project")
+                new_data = request.form.to_dict()
+                print(new_data)
+                # to be continued ........
+        return jsonify({"message":response_message,"state":response_state})
+
 
 @my_app.route("/update/Invitation/<state>", methods=["POST","DELETE"])
 @cross_origin()

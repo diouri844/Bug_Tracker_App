@@ -1,5 +1,10 @@
 <template>
     <div class="container" appear>
+        <div class="container-seconde" v-if="update_team">
+          <UpdateTeamForm v-bind:Project="projectToupdate"
+                          @CloseUpdatePopUp="closeupdate">
+          </UpdateTeamForm>
+        </div>
         <ul v-show="currentuserHasProjects" class="responsive-table">
             <li class="table-header">
                 <div class="col col-1"> Id</div>
@@ -35,9 +40,9 @@
         </ul>
     </div>
 </template>
-
 <script scoped>
 import vuetyped from "vue3typed/libs/typed";
+import UpdateTeamForm from "@/components/UpdateTeamForm.vue";
 import axios from "axios";    
     export default{
     props:{
@@ -47,7 +52,8 @@ import axios from "axios";
       }
     },
     components: {
-      vuetyped
+      vuetyped,
+      UpdateTeamForm
     },
     mounted(){
         //fecth data from endpoint : 
@@ -90,16 +96,26 @@ import axios from "axios";
     data(){
         return {
             "Data":'',
+            "update_team":false,
             "currentuserHasProjects":Boolean,
-            "dontcurrentuserHasProjects":Boolean
+            "dontcurrentuserHasProjects":Boolean,
+            "projectToupdate":""
         }
     },
     methods:{
         click_table_row(){
             console.log("row click detected ");
         },
+        closeupdate(){
+          this.update_team = false;
+        },
         fix_team(item){
           console.log(item.Name+" fix team problem ....");
+          // update the team : 
+          // step 1 : show popup to selecte new team :
+          this.projectToupdate = item;
+          //this.currentuserHasProjects = false;
+          this.update_team = true;
         },
         delete_project(item){
           console.log(item);
@@ -155,6 +171,11 @@ import axios from "axios";
     color:#fff;
 
 }
+.container-seconde{
+  /*display:none;*/
+}
+
+
 
 body {
   font-family: 'lato', sans-serif;
