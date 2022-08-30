@@ -121,12 +121,17 @@ export default {
             new_data.append("TeamManager",this.teamsearchresult.TeamManager);
             new_data.append("ProjectOwner",this.Project.Owner);
             new_data.append("ProjectState",this.Project.State);
-            new_data.append("TeamContributors",this.teamsearchresult.Contributors);
-            console.log(new_data);
+            new_data.append("TeamContributors",this.teamsearchresult.TeamGroup);
+            console.log(new_data.get('TeamContributors'));
             //send post request to the backend api :
             axios.post("http://127.0.0.1:5000/update/Team",new_data)
             .then(response => {
-                console.log(response.data.message);
+                this.$notify({
+                        type:response.data.state,
+                        title: "Update Project Team ",
+                        text: response.data.message,
+                        position:"bottom right"
+                });
             })
             .catch(error => {
                 console.error(error);

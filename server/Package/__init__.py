@@ -276,7 +276,7 @@ def add_project_team(team,project,state):
         )
     except Exception as e:
         print("[Error add project to team ]: "+str(e))
-        response = -1
+        reponse = -1
     return reponse
 
 def remove_project(project):
@@ -298,6 +298,8 @@ def remove_project(project):
         print("[ delet team name from project error ] : "+str(e))
         response =  -1
     return response
+
+
 def remove_team_from_project(project):
     # get connexion with atlas mongodb:
     path = dirname(abspath(__file__)) + '/.env'
@@ -437,9 +439,6 @@ def send_invitation(invitation):
                 'Subject':invitation['Subject'],
                 'State':'Sended'
             })
-        
-
-
     except Exception as e:
         print("add invit error : "+str(e))
         reponse = -1

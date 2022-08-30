@@ -110,7 +110,27 @@ def update_subject_custom(subject):
                 print("update team : new team to old project")
                 new_data = request.form.to_dict()
                 print(new_data)
-                # to be continued ........
+                # update the form of invitation:
+                invitation = {}
+                invitation['from'] = new_data['ProjectOwner']
+                invitation['To'] = new_data['TeamManager']
+                invitation['Type'] = 'Project'
+                invitation['Target'] = new_data['Project']
+                invitation['Subject'] = 'I want you to give us a hand with '+str(new_data['Project'])
+                invitation['TeamName'] = new_data['Team']
+                invitation['State'] = 'Sended'
+                response_custom_invit = send_invitation(invitation)
+                # when i update state of the costum initation all is done great but the project state in 
+                # the team target project state is null " " that is an error to fixe 
+                # some time the project collection , team name attribute don't get the value of the new 
+                # team added to project , and the value stay " Not-found " as the ferst use case this is another 
+                # error to fixe it later ........ , djaaana :) 
+                if response_custom_invit < 0:
+                    response_message = "We can't send out the invitation to "+str(invitation['To'])+" try again."
+                    response_state = "error"
+                else:
+                    response_message = "The user "+str(invitation['To'])+" has been successfully logged in."
+                    response_state = "success"
         return jsonify({"message":response_message,"state":response_state})
 
 
