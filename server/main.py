@@ -124,7 +124,8 @@ def update_subject_custom(subject):
                 # the team target project state is null " " that is an error to fixe 
                 # some time the project collection , team name attribute don't get the value of the new 
                 # team added to project , and the value stay " Not-found " as the ferst use case this is another 
-                # error to fixe it later ........ , djaaana :) 
+                # error to fixe it later ........ , djaaana :)
+                 
                 if response_custom_invit < 0:
                     response_message = "We can't send out the invitation to "+str(invitation['To'])+" try again."
                     response_state = "error"

@@ -263,17 +263,56 @@ def add_project_team(team,project,state):
             print("\n Project : ",project," state :  ",state)
         my_client = MongoClient(connexion_uri)
         my_db = my_client.BUG_TRAKER_DBA
-        
+        # step 1 : get all project name and all project state 
+        data_team = list(
+            my_db.Team.find(
+                {
+            'TeamName':team
+                },{
+                    'TeamName':0,
+                    'TeamManager':0,
+                    '_id':0,
+                    'TeamGroup':0
+                }))
+        # [{'TeamProject': ['tkinter_app', 'Qt_app', 'project_D'], 'ProjectState': ['On hold', 'On progress']}]
+        project_list = data_team[0]['TeamProject']
+        state_list = data_team[0]['ProjectState']
+        # step 2 : add the new project to to list project exported 
+        if not project in project_list:
+            project_list.append(project)
+            state_list.append(state)
+        # update the collection document :
         my_db.Team.update_one({
             'TeamName':team
         },{
-            '$addToSet':
+            '$set':
                 {
-                'TeamProject':project,
-                'ProjectState':state
+                'TeamProject':project_list,
+                'ProjectState':state_list
                 }
             }
         )
+        # update project team name if is "Not-definded ":
+        project_team_name = list(
+            my_db.Project.find({
+                'Name':project
+            },{
+                '_id':0
+            })
+        )[0]['Team']
+        # check if team name is : Not-found
+        if project_team_name == 'Not-found':
+            # update team name :
+            my_db.Project.update_one(
+                {
+                    'Name':project
+                },
+                {
+                    '$set':{
+                        'Team':team
+                    }
+                }
+            )
     except Exception as e:
         print("[Error add project to team ]: "+str(e))
         reponse = -1
@@ -518,7 +557,7 @@ def drup_all_invitation(user):
             {
                 'To':user,
                 'State':{
-                    '$in':["Accept","Refuse"]
+                    '$in':["Accept","Refuse",""]
                 }
             })
     except Exception as e:
