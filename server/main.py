@@ -29,10 +29,12 @@ def registration():
     if request.method == "POST":
         registration_data = request.form.to_dict()
         registration_state = 0
-        response = check_account_registration(registration_data['FerstName'],
-                                              registration_data['LastName'],
-                                              registration_data['Email'],
-                                              registration_data['Password'])
+        response = check_account_registration(
+            registration_data['FerstName'],
+            registration_data['LastName'],
+            registration_data['Email'],
+            registration_data['Password']
+            )
         if response == 1: 
             return jsonify({"message": "account already exists ",'RegistrationState':registration_state })
         else:
@@ -295,7 +297,16 @@ def delete(subject):
                 state_response = "error"
     return jsonify({"message":response_message,"state":state_response})
 
+
+
+@my_app.route("/",methods=["GET"])
+@cross_origin()
+def ping():
+    return jsonify({"message":"Api pong"})
+
+
 if __name__=="__main__":
     my_app.secret_key = 'super secret key'
     my_app.config['SESSION_TYPE'] = 'filesystem'
+    print("Bug tracker runing on : http://localhost:5000" )
     my_app.run(debug=True)
