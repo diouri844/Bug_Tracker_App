@@ -1,0 +1,5 @@
+API_PREFIXER ="/api/v1/beta"
+User_PREFIXER = "/User"
+Invitation_PREFIXER = "/Invit"
+Project_PREFIXER = "/Project"
+Team_PREFIXER = "/Team"
