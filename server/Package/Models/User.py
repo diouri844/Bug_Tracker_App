@@ -8,6 +8,11 @@ class User(my_database.Model):
 	id = my_database.Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
 	userName = my_database.Column(my_database.String(64),unique=True, nullable=False)
 	password = my_database.Column(my_database.String(256), nullable=False)
+	teams = my_database.relationship(
+			'Team', 
+			secondary='user_team_role', 
+			back_populates='users'
+	)
 	#permissions = my_database.relationship('Permission', secondary='user_permission')
 	def __init__(self, username="", password=""):
 		self.userName = username
