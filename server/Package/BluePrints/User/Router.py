@@ -1,5 +1,6 @@
 #import user model from models 
 from Package.Models.User import User
+from Package.BluePrints.User.Service import UserService
 #import User prefixer endpoint : 
 from Package.BluePrints import User_PREFIXER, API_PREFIXER
 from Package.Db import my_database
@@ -59,3 +60,23 @@ def get_user_data(user_id):
 		print( e )
 		return jsonify({"message": "Error getting user"}),404
 
+#add route to create a new user : 
+@user_api.route(Prefixer+"/",methods=["POST"])
+@cross_origin()
+def create_user():
+	#extrct user payload from request json body : 
+	userPayaload = request.json
+	#validate the payload via the userService: 
+	isValidPayaload = UserService.validatePayload(userPayaload)
+	if not isValidPayaload:
+		return jsonify({"message": "Invalid payload for user"}),400
+	#check if the userName already used : 
+	userAlreadyUsed = UserService.alreadyUsed(userPayaload)
+	if userAlreadyUsed:
+		return jsonify({"message": "User name already used "}),402
+	try:
+		createdUser = UserService.createUser(userPayaload)
+		return jsonify({"message": "User created successfully ", "user":createdUser}),201
+	except Exception as e:
+		print( e )
+		return jsonify({"message": "Failed to create user "}), 401
