@@ -2,9 +2,10 @@ from flask import Flask,request,jsonify
 from Package import *
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
-from Package.Db import my_database
+from Package.Db import my_database,setup_user_team_role
 #impotrt all needed models : 
 from Package.Models.User import User
+from Package.Models.Team import Team
 from Package.BluePrints import API_PREFIXER
 import os
 
@@ -44,6 +45,7 @@ if __name__=="__main__":
 	# 	my_app.config["SQLALCHEMY_DATABASE_URI"])
 	#try to create all the tabels needed :	
 	with my_app.app_context():
+		setup_user_team_role()
 		my_database.create_all()
 		alreadyUser = User.query.filter_by(userName='BugAdminClient').first()
 		if not alreadyUser:
