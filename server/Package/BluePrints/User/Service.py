@@ -29,4 +29,19 @@ class UserService:
         my_database.session.add(createUser)
         my_database.session.commit()
         return createUser.toDict()
+    @staticmethod
+    def getUserListPaginated(page=1,per_page=10):
+        users = User.query.paginate(
+		    page=page,
+		    per_page=per_page,
+		    error_out=False
+	    )
+        formated_data = {
+		    'items': [users.toDict() for users in users.items],  
+		    'page': users.page,
+		    'per_page': users.per_page,
+		    'total_pages': users.pages,
+		    'total_items': users.total,
+	    }
+        return formated_data
         
