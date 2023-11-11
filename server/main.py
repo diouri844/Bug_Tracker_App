@@ -11,6 +11,7 @@ import os
 
 #import all the bluePrints :
 from Package.BluePrints.User import UserController 
+from Package.BluePrints.Team import TeamController
 
 #load env variables: 
 load_dotenv()
@@ -29,6 +30,7 @@ my_database.init_app(my_app)
 #register all the bluePrints:
 
 my_app.register_blueprint(UserController)
+my_app.register_blueprint(TeamController)
 
 
 @my_app.route(API_PREFIXER,methods=["GET"])
@@ -41,9 +43,6 @@ if __name__=="__main__":
 	my_app.secret_key = 'super secret key'
 	my_app.config['SESSION_TYPE'] = 'filesystem'
 	print(f"--> Bug tracker runing on : http://localhost:5000{API_PREFIXER} \n")
-	# print("--> Connected to PostgreSQL cluster on : ",
-	# 	my_app.config["SQLALCHEMY_DATABASE_URI"])
-	#try to create all the tabels needed :	
 	with my_app.app_context():
 		setup_user_team_role()
 		my_database.create_all()
