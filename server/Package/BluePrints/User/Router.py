@@ -5,13 +5,10 @@ from Package.BluePrints.User.Service import UserService
 from Package.BluePrints import User_PREFIXER, API_PREFIXER
 from Package.Db import my_database
 #define user bluePrint here with all the routes and the controllers : 
-from flask import Flask, request, session, jsonify, Blueprint 
+from flask import request, jsonify, Blueprint 
 # import flask cors configuration lib : 
-from flask_cors import CORS, cross_origin
-from dotenv import load_dotenv
-import os
-import jwt
-import datetime
+from flask_cors import cross_origin
+
 
 
 #define my bluePrint :
@@ -32,20 +29,7 @@ def get_user_list():
 	page = int(request.args.get('page', 1))
 	per_page = int(request.args.get('per_page', 20))
 	#try to get users with pagination 
-	users = User.query.paginate(
-		page=page,
-		per_page=per_page,
-		error_out=False
-	)
-	# format data : 
-	formated_data = {
-		'items': [users.toDict() for users in users.items],  
-		'page': users.page,
-		'per_page': users.per_page,
-		'total_pages': users.pages,
-		'total_items': users.total,
-	}
-	#return jsonify({"data":{"items":[]}}),200
+	formated_data = UserService.getUserListPaginated(page,per_page)
 	return jsonify({"data":formated_data}),200
 #get a user with id :
 @user_api.route(Prefixer+"/<user_id>",methods=["GET"])
