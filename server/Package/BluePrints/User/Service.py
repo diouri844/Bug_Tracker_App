@@ -24,6 +24,12 @@ class UserService:
             return True
         return False
     @staticmethod
+    def alreadyExists(userid):
+        target = User.query.filter_by(id=userid).first()
+        if not target:
+            return False
+        return True
+    @staticmethod
     def createUser(userPayload):
         createUser = User(userPayload["userName"], userPayload["password"])
         my_database.session.add(createUser)
