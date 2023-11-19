@@ -1,11 +1,6 @@
-from flask import jsonify
-from dotenv import load_dotenv
-from os.path import dirname, abspath
-from pymongo import MongoClient
-# importing ObjectId from bson library
-from bson.objectid import ObjectId
-import os
-
+from Package.Models.Team import Team
+from Package.Models.User import User
+from Package.Db import my_database
 
 def create_team(team_data):
     # get connexion with atlas mongodb:
@@ -76,3 +71,54 @@ def get_contributors(team):
     except Exception as e:
         print("[error get tema contribs ]:  "+str(e))
         return [] 
+
+
+
+#define my service class : 
+class TeamService:
+    @staticmethod
+    def getTeamListPaginated(page=1,per_page=10):
+        teamList = Team.query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+        formated_data = {
+            'items':[team.toDict() for team in teamList],
+            'page':teamList.page,
+            'per_page':teamList.per_page,
+            'total_pages':teamList.pages,
+            'total_items':teamList.total
+        }
+        return formated_data
+    @staticmethod
+    def alreadyExist(teamId=""):
+        teamtarget = Team.query.filter_by(id=teamId).first()
+        if teamtarget:
+            return True
+        return False
+    @staticmethod
+    def getTeamAdmin(teamId=""):
+        #get the team data :
+        teamTarget = Team.query.filter_by(id=teamId).first()
+        if not teamTarget:
+            return
+        admin = teamTarget.toDict().admin
+        #get the admin data by id :
+        adminTarget =  User.query.filter_by(id=admin).first()
+        return adminTarget.toDict()
+    @staticmethod
+    def setNewTeamAdmin(teamId, userId):
+        try:
+            #get the team target : 
+            target = Team.query.filter_by(id=teamId).first()
+            #set the new admin id : 
+            target.admin = userId
+            #save the session updates : 
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print( e )
+            my_database.session.rollback()
+            return False 
+
