@@ -108,6 +108,28 @@ class TeamService:
         adminTarget =  User.query.filter_by(id=admin).first()
         return adminTarget.toDict()
     @staticmethod
+    def checkTeamByName(teamName):
+        target = Team.query.filter_by(name=teamName).first()
+        if not target:
+            return False
+        return True
+    @staticmethod
+    def updateteamName(teamId, newTeamName):
+        try:
+            target = Team.query.filter_by(id=teamId).first()
+            target.name = newTeamName
+            #save the session updates : 
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print( e )
+            my_database.session.rollback()
+            return False
+    @staticmethod
+    def getTeamMembers(teamId):
+        teamtarget = Team.query.filter_by(id=teamId).first()
+        return teamtarget.get_contributors()
+    @staticmethod
     def setNewTeamAdmin(teamId, userId):
         try:
             #get the team target : 
