@@ -79,3 +79,40 @@ def update_team_admin(team_id, user_id):
     if not updateState:
         return jsonify({"message": "Failed to update team admin"}),404
     return jsonify({"message": "Team admin updated successfully"}),201
+
+#update the team name by id :
+
+@team_api.route(Prefixer+"/<team_id>", methods=["PUT"])
+@cross_origin()
+def update_team_name(team_id):
+    #check if team exists:
+    alreadyExist = TeamService.alreadyExist(team_id)
+    if not alreadyExist:
+        return jsonify({"message": "Team not found"}),400
+    newTeamPayload = request.json
+    #check if team containe a new tean name prop : 
+    if not "name" in newTeamPayload:
+        return jsonify({"message":"Team is Up to date"}),200    
+    newTeamName = newTeamPayload["name"]
+    #check if the team name not already exist :
+    isNameAlreadyExists = TeamService.checkTeamByName(newTeamName)
+    if isNameAlreadyExists:
+        return jsonify({"message":"Team name already used "}),403 
+    #call the service to update the team name :
+    updatedNameState = TeamService.updateteamName(team_id,newTeamName)
+    #check the status of the updated service call :
+    if updatedNameState:
+        return jsonify({"message": "Team name updated successfully"})
+    return jsonify({"message":"Faild to update team name "}),404
+
+#get team members by id :
+@team_api.route(Prefixer+"/<team_id>/members", methods=["GET"])
+@cross_origin()
+def get_team_members(team_id):
+    #check if team exists:
+    alreadyExist = TeamService.alreadyExist(team_id)
+    if not alreadyExist:
+        return jsonify({"message": "Team not found"}),400
+    #call the service :
+    contributorList = TeamService.getTeamMembers(team_id)
+    return jsonify({"data":contributorList}), 200
