@@ -15,6 +15,14 @@ class Team(my_database.Model):
     def __init__(self,name="", admin=""):
         self.name = name
         self.admin = admin
+    #add class method to fetch for all users :
+    def get_contributors(self):
+        userList = my_database.session.query(
+            "user_team_role"
+        ).filter_by(
+            team_id=self.id
+        ).all()
+        return [user.toDict() for user in userList]
     def toDict(self):
         return dict(
             id=self.id,
