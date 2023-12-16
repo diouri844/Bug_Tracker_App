@@ -61,6 +61,38 @@ def get_team_admin(team_id):
     print( adminTarget )
     return jsonify({"data": adminTarget }),200
 
+
+#create new team :
+@team_api.route(Prefixer+"/New/<admin_id>", methods=["POST"])
+@cross_origin()
+def create_new_team(admin_id):
+    #check is admin exist :
+    adminTarget = UserService.alreadyExists(admin_id)
+    if not adminTarget:
+        return jsonify({"message": "User not found"}),400
+    #extract the paload from the request : 
+    newTeamPayload = request.json
+    #check if the payload has a name prop :
+    if not "name" in newTeamPayload:
+        return jsonify({"message": "Name is required"}),404
+    #check if the provided name is not already used :
+    teamName = newTeamPayload["name"]
+    teamNameExist = TeamService.checkTeamByName( teamName )
+    if teamNameExist:
+        return jsonify({"message": "Team Name is already in use "}),404
+    #call static method to create new team:
+    createdTeamResponse = TeamService.createNewTeam(teamName,admin_id)
+    if not createdTeamResponse.created:
+        return jsonify({"message": "Faild create Team "}),500
+    return jsonify({
+        "message": "Team Created successfully",
+        "team":createdTeamResponse.target
+        }
+    ),201
+
+
+
+
 #update the admin by id :
 @team_api.route(Prefixer+"<team_id>/Administrator/New/<user_id>",methods=["PUT"])
 @cross_origin()
@@ -116,3 +148,5 @@ def get_team_members(team_id):
     #call the service :
     contributorList = TeamService.getTeamMembers(team_id)
     return jsonify({"data":contributorList}), 200
+
+
