@@ -143,4 +143,14 @@ class TeamService:
             print( e )
             my_database.session.rollback()
             return False 
-
+    @staticmethod
+    def createNewTeam(teamName, teamAdminId):
+        try:
+            teamToInsert = Team(teamName, teamAdminId)
+            #save new team item :
+            my_database.session.add(teamToInsert)
+            my_database.session.commit()
+            return { "created": True, "target": teamToInsert.toDict()}
+        except Exception as e:
+            print( e )
+            return { "created": False, "target": {}}
