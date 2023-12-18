@@ -82,16 +82,13 @@ def create_new_team(admin_id):
         return jsonify({"message": "Team Name is already in use "}),404
     #call static method to create new team:
     createdTeamResponse = TeamService.createNewTeam(teamName,admin_id)
-    if not createdTeamResponse.created:
+    if not createdTeamResponse["created"]:
         return jsonify({"message": "Faild create Team "}),500
     return jsonify({
         "message": "Team Created successfully",
-        "team":createdTeamResponse.target
+        "team":createdTeamResponse["target"]
         }
     ),201
-
-
-
 
 #update the admin by id :
 @team_api.route(Prefixer+"<team_id>/Administrator/New/<user_id>",methods=["PUT"])
