@@ -103,7 +103,7 @@ class TeamService:
         teamTarget = Team.query.filter_by(id=teamId).first()
         if not teamTarget:
             return
-        admin = teamTarget.toDict().admin
+        admin = teamTarget.toDict()["admin"]
         #get the admin data by id :
         adminTarget =  User.query.filter_by(id=admin).first()
         return adminTarget.toDict()
@@ -154,3 +154,23 @@ class TeamService:
         except Exception as e:
             print( e )
             return { "created": False, "target": {}}
+    @staticmethod
+    #add user to team :
+    def add_contributor(team_id, user_id, role_name):
+        try:
+            #try to add the user to the team :
+            newTeamUserRelation = {
+                "user_id": user_id,
+                "team_id": team_id,
+                "role": role_name
+            }
+            #add it to the session : 
+            my_database.session.execute(
+                "INSERT INTO user_team_role (user_id, team_id, role) VALUES (:user_id, :team_id, :role)",
+                newTeamUserRelation,
+            )
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print( e )
+            return False
