@@ -147,3 +147,46 @@ def get_team_members(team_id):
     return jsonify({"data":contributorList}), 200
 
 
+
+#add new team member ( contributer )
+@team_api.route(Prefixer+"/<team_id>/members/add/<member_id>", methods=["POST"])
+@cross_origin()
+def add_team_member(team_id, member_id):
+    # check if team exist :
+    alreadyExist = TeamService.alreadyExist(team_id)
+    if not alreadyExist:
+        return jsonify({"message": "Team not found"}),400
+    # check if user exist :
+    userAlreadyExist = UserService.alreadyExists(member_id)
+    if not userAlreadyExist:
+        return jsonify({"message": "User not found"}),400
+    #extract the role from request body:
+    payload = request.json
+    default_role_contrib = "Contributor"
+    #check if role is already present:
+    if "role" in payload:
+        default_role_contrib = payload["role"]
+    #  call static serivce to add team member:    
+    addContribResponse = TeamService.add_contributor(team_id,member_id, default_role_contrib)
+    # check resposne :
+    if addContribResponse:
+        return jsonify({"message":"New team member added successfully"}), 202
+    return jsonify({"message":"Failure to add team member"}), 502
+
+#block  ( remove ) team members acces :
+@team_api.route(Prefixer+"/<team_id>/members/remove/<member_id>", methods=["GET"])
+@cross_origin()
+def remove_team_member(team_id, member_id):
+    # check if team exist :
+    alreadyExist = TeamService.alreadyExist(team_id)
+    if not alreadyExist:
+        return jsonify({"message": "Team not found"}),400
+    # check if user exist :
+    userAlreadyExist = UserService.alreadyExists(member_id)
+    if not userAlreadyExist:
+        return jsonify({"message": "User not found"}),400
+    #call remover static method:
+    removeContribResponse = TeamService.remove_contributor(team_id,member_id) 
+    if removeContribResponse:
+        return jsonify({"message":"Member remove successfully "}), 200
+    return jsonify({"message":"Failure to remove team member"}), 502
