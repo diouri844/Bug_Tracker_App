@@ -1,6 +1,7 @@
 from Package.Models.Team import Team
 from Package.Models.User import User
 from Package.Db import my_database
+from sqlalchemy import text
 
 def create_team(team_data):
     # get connexion with atlas mongodb:
@@ -154,21 +155,35 @@ class TeamService:
         except Exception as e:
             print( e )
             return { "created": False, "target": {}}
-    @staticmethod
     #add user to team :
+    @staticmethod
     def add_contributor(team_id, user_id, role_name):
         try:
-            #try to add the user to the team :
-            newTeamUserRelation = {
+            # try to add the user to the team
+            new_team_user_relation = {
                 "user_id": user_id,
                 "team_id": team_id,
                 "role": role_name
             }
-            #add it to the session : 
-            my_database.session.execute(
-                "INSERT INTO user_team_role (user_id, team_id, role) VALUES (:user_id, :team_id, :role)",
-                newTeamUserRelation,
+            # use SQLAlchemy's text function to define the SQL statement
+            sql_statement = text(
+                "INSERT INTO user_team_role (user_id, team_id, role) VALUES (:user_id, :team_id, :role)"
             )
+            # execute the statement with parameters using the session
+            my_database.session.execute(sql_statement, new_team_user_relation)
+            my_database.session.commit()
+
+            return True
+        except Exception as e:
+            print(e)
+            return False
+    #delete ( block ) user for team access :
+    def remove_contributor(team_id, user_id):
+        try:
+            sql_statement = text(
+                "DELETE FROM user_team_role WHERE team_id = :team_id AND user_id = :user_id"
+            )
+            my_database.session.execute(sql_statement, {"team_id": team_id, "user_id": user_id})
             my_database.session.commit()
             return True
         except Exception as e:
