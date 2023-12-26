@@ -20,7 +20,7 @@ Prefixer = API_PREFIXER+Team_PREFIXER
 @team_api.route(Prefixer+"/Ping", methods=["GET"])
 @cross_origin()
 def ping_handler():
-    return jsonify({"Response": "Team Pong"})
+    return jsonify({"Response": "Team Pong"}),200
 
 
 # router endpoint to get the list of all teams in the database : 
