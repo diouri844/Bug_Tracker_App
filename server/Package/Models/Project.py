@@ -21,10 +21,19 @@ class Project(my_database.Model):
         self.repo_url = repo_url
         self.description = "Default description you can update it later"
         self.state = "CREATED"
+    #get all teams workin on the current project:
+    def getTeamList(self):
+        sql_statement = text(
+            "SELECT team_id FROM team_project WHERE project_id= :project_id"
+        )
+        queryValues  = my_database.session.execute(sql_statement,{"project_id":self.id}).fetchall()
+        id_list = [ item[0]  for item in queryValues ] 
+        return id_list
     def toDict(self):
         return dict(
             id=self.id,
             name=self.name,
+            manager=self.manager,
             description=self.description,
             state=self.state,
             url=self.repo_url
