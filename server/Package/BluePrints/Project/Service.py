@@ -22,7 +22,31 @@ class ProjectService:
         return formated_data
     @staticmethod
     def get_project_by_id(project_id):
+        #define the return object :
+        returnValues = {
+            "state":False,
+            "data":{}
+        }
         projetTarget = Project.query.filter_by(id=project_id).first()
         if not projetTarget:
-            return {}
-        return projetTarget.toDict()
+            return returnValues
+        #update the return values:
+        returnValues["state"] = True
+        returnValues["data"] = projetTarget.toDict()
+        return returnValues 
+    @staticmethod
+    def get_project_by_name(project_name):
+        #make sure that the project name is in lowercase:
+        name = str(project_name).lower()
+        returnValues = {
+            "state":False,
+            "data":{}
+        }
+        #try to find the project by name:
+        projectToFind = Project.query.filter_by(name=name).first()
+        if not projectToFind:
+            return returnValues
+        #update states :
+        returnValues["state"] = True
+        returnValues["data"] = projectToFind.toDict()
+        return returnValues
