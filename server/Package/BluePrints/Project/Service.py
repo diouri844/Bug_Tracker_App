@@ -1,5 +1,6 @@
 from flask import jsonify
 from Package.Models.Project import Project
+from Package.Models.Team import Team
 from Package.Db import my_database
 
 
@@ -50,3 +51,44 @@ class ProjectService:
         returnValues["state"] = True
         returnValues["data"] = projectToFind.toDict()
         return returnValues
+    #get the list of teams information that working on the project:
+    @staticmethod
+    def get_project_team_list(project_id):
+        #get the lis of team id as a first step:
+        team_id_list = Project.getTeamList(project_id)
+        #check if the project is already has team :
+        if len(team_id_list) == 0:
+            return []
+        team_list = []
+        for team_id in team_id_list:
+            #get the current team info by id :
+            target = Team.query.filter_by(id=team_id).first()
+            if target:
+                team_list.append( target.toDict())
+        return team_list
+    #update project manager :
+    @staticmethod
+    def update_project_manager(project_id, manager_id):
+        try:
+            projectToUpdate = Project.query.filter_by(id=project_id).first()
+            #set the new manager id :
+            projectToUpdate["manager"] = manager_id
+            #save the session : 
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error updating project manager: ", e)
+            my_database.session.rollback()
+            return False
+    #update project status :
+    @staticmethod
+    def update_project_status(project_id, new_status):
+        try:
+            projectToUpdate = Project.query.filter_by(id=project_id).first()
+            projectToUpdate["state"] = new_status
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error updating project status: ", e)
+            my_database.session.rollback()
+            return False
