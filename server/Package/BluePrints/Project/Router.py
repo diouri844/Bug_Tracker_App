@@ -116,3 +116,73 @@ def update_project_state(project_id):
                         return jsonify({"message": "Failed to update project state"}),500
                 return jsonify({"message": "Project status updated successfully"}),202
         return jsonify({"message": "New State is required"}),400
+
+#update project infor ( name , description and repo ) by project id 
+@project_api.route(Prefixer+"/<project_id>", methods=["PUT"])
+@cross_origin()
+def update_project_infor(project_id):
+         #set to update state :
+        toUpdate = False
+        newName = ""
+        newDescription = ""
+        newRepo = ""
+        #check if project is already exist :
+        projectTarget = ProjectService.get_project_by_id( project_id )
+        if not projectTarget: return jsonify({"message": "Project not found"}),404
+       
+        #get the new info  from request  body :
+        newPayalod = request.json
+        #check if containg some new props to set : 
+        if "name" in newPayalod:
+                newName = newPayalod["name"]
+                toUpdate = True
+        if "description" in newPayalod:
+                newDescription = newPayalod["description"]
+                toUpdate = True
+        if "repo" in newPayalod:
+                newRepo = newPayalod["repo"]
+                toUpdate = True
+        #check if the update state if on true :
+        if not toUpdate:
+                return jsonify({"message":"Project is up to date"}),200
+        #call the update static service :
+        updatedState = ProjectService.update_project_details(
+                newName,
+                newDescription,
+                newRepo
+        )
+        #check update state :
+        if not updatedState:
+                return jsonify({"message": "Failed to update project"}),501
+        return jsonify({"message": "Project details updated successufully"}),202
+
+#create new project :
+@project_api.route(Prefixer+"/<user_id>/new", methods=["POST"])
+@cross_origin()
+def create_project(user_id):
+        #check if user already exists :
+        userTarget = UserService.alreadyExists( user_id )
+        if not userTarget: return jsonify({"message": "User not found"}),404
+        #extract the new project data payload from the request :
+        projectPayload = request.json
+        if not "name" in projectPayload:
+                return jsonify({"message": "Project name is required"}),404
+        if not "manager" in projectPayload:
+                return jsonify({"message": "Manager id is required"}),404
+        if not "url" in projectPayload:
+                return jsonify({"message": "ressource url is required"}),404
+        projectName = str(projectPayload["name"]).capitalize()
+        projectMangerId = projectPayload["manager"]
+        projectUrl = projectPayload["url"]
+        #check if the project name is unique :
+        projectTarget = Project.query.filter_by(name=projectName).first()
+        if projectTarget:
+                return jsonify({"message":"Project name is already in use"}),403
+        #create a new project:
+        ProjectCreatedStatus = ProjectService.create_project(
+                projectName,projectMangerId,"","",projectUrl
+        )
+        #check the status:
+        if not ProjectCreatedStatus: 
+                return jsonify({"message":"Faild to Create Project "}),403
+        return jsonify({"message":"Project Created successufully "}),201
