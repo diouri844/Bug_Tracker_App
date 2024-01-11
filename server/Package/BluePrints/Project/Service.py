@@ -92,3 +92,44 @@ class ProjectService:
             print("Error updating project status: ", e)
             my_database.session.rollback()
             return False
+    #update project details :
+    @staticmethod
+    def update_project_details(newName="", newDescription="", newRepository=""):
+        #check the project new name :
+        try:
+            projectTarget = Project.query.filter_by(name=newName).first()
+            if projectTarget :
+                return False
+            
+            #update the provided information : 
+            if not newName == "":
+                projectTarget["name"] = newName
+            if not newDescription == "":
+                projectTarget["description"] = newDescription
+            if not newRepository == "":
+                projectTarget["url"] = newRepository
+            #sve the new project info : 
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error updating project details : ", e)
+            my_database.session.rollback()
+            return False
+    #create new project static method :
+    @staticmethod
+    def create_project(
+        name="", manager="", 
+        description="", state="", url=""
+        ):
+        #try to create new project instance :
+        try:
+            projectTarget = Project(name, manager,url, description,state)
+            #insert it to the sessions : 
+            my_database.session.add(projectTarget)
+            #save the state :
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error creating project instance ", e)
+            my_database.session.rollback()            
+            return False  
