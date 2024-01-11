@@ -21,6 +21,21 @@ class Project(my_database.Model):
         self.repo_url = repo_url
         self.description = "Default description you can update it later"
         self.state = "CREATED"
+    #overwrite the constructor :
+    def __init__(self, name="", manager="", repo_url="", description="", state=""):
+        self.name = name
+        self.manager = manager
+        self.repo_url = repo_url
+        self.description = description
+        self.state = state
+    #make seters needed for updating states : 
+    def setDescription(self, description=""):
+        self.description = description
+        return
+    #set state :
+    def setState(self, state=""):
+        self.state = state
+        return
     #get all teams workin on the current project:
     def getTeamList(self):
         sql_statement = text(
