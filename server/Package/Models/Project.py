@@ -37,13 +37,30 @@ class Project(my_database.Model):
         self.state = state
         return
     #get all teams workin on the current project:
-    def getTeamList(self):
+    @staticmethod
+    def getTeamList(project_id):
         sql_statement = text(
             "SELECT team_id FROM team_project WHERE project_id= :project_id"
         )
-        queryValues  = my_database.session.execute(sql_statement,{"project_id":self.id}).fetchall()
+        queryValues  = my_database.session.execute(sql_statement,{"project_id":project_id}).fetchall()
         id_list = [ item[0]  for item in queryValues ] 
         return id_list
+    @staticmethod
+    def addTeam(project_id, team_id):
+        sql_statement = text(
+            "INSERT INTO team_project (project_id, team_id) VALUES (:project_id, :team_id)"
+        )
+        try:
+            my_database.session.execute(
+                sql_statement,{"project_id":project_id, "team_id":team_id}
+            )
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print(" Error linking team into project ", e)
+            my_database.session.rollback()
+            return False
+
     def toDict(self):
         return dict(
             id=self.id,
