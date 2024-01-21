@@ -1,6 +1,7 @@
 from Package.Models.Project import Project
 from Package.Models.User import User
 from Package.BluePrints.Project.Service import ProjectService
+from Package.BluePrints.Team.Service import TeamService
 from Package.BluePrints import Project_PREFIXER, API_PREFIXER
 from flask import request, jsonify, Blueprint 
 # import flask cors configuration lib : 
@@ -97,7 +98,7 @@ def update_project_manager(project_id, user_id):
         #call the static service to set the new project manager :
         updateManagerStatus = ProjectService.update_project_manager(project_id, user_id)
         if not updateManagerStatus: return jsonify({"message": "Faild to Update Project manager"}),500
-        return jsonify({"message": "Manger Updated Successufully"}),202
+        return jsonify({"message": "Manager Updated Successufully"}),202
 
 #update project state by project id :
 @project_api.route(Prefixer+"/<project_id>/State",methods=["PUT"])
@@ -147,6 +148,7 @@ def update_project_infor(project_id):
                 return jsonify({"message":"Project is up to date"}),200
         #call the update static service :
         updatedState = ProjectService.update_project_details(
+                project_id,
                 newName,
                 newDescription,
                 newRepo
@@ -155,6 +157,32 @@ def update_project_infor(project_id):
         if not updatedState:
                 return jsonify({"message": "Failed to update project"}),501
         return jsonify({"message": "Project details updated successufully"}),202
+
+
+
+#add team to project : 
+@project_api.route(Prefixer+"/<project_id>/Team/Add/<team_id>", methods=["PUT"])
+@cross_origin()
+def add_team(project_id, team_id):
+        #check if project exists:
+        projectTarget = ProjectService.get_project_by_id( project_id )
+        if not projectTarget: return jsonify({"message": "Project not found"}),404
+        #check if team exists : 
+        teamTarget = TeamService.alreadyExist( team_id )
+        if not teamTarget: return jsonify({"message": "Team not found"}),404
+        #check if team not already related to this project :
+        isRelated = ProjectService.is_related_to_project(project_id, team_id)
+        if isRelated:
+                return jsonify({"message": "Team already working on it "}),403
+        #call static service :
+        addTeamStatus = ProjectService.add_to_project(project_id, team_id)
+        if not addTeamStatus:
+                return jsonify({"message": "Failed to add team to project "}),403
+        return jsonify({"message":"Team added successufully to project"}),200
+
+
+
+
 
 #create new project :
 @project_api.route(Prefixer+"/<user_id>/new", methods=["POST"])
@@ -167,12 +195,10 @@ def create_project(user_id):
         projectPayload = request.json
         if not "name" in projectPayload:
                 return jsonify({"message": "Project name is required"}),404
-        if not "manager" in projectPayload:
-                return jsonify({"message": "Manager id is required"}),404
         if not "url" in projectPayload:
                 return jsonify({"message": "ressource url is required"}),404
         projectName = str(projectPayload["name"]).capitalize()
-        projectMangerId = projectPayload["manager"]
+        projectMangerId = user_id
         projectUrl = projectPayload["url"]
         #check if the project name is unique :
         projectTarget = Project.query.filter_by(name=projectName).first()
