@@ -55,7 +55,7 @@ class ProjectService:
     @staticmethod
     def get_project_team_list(project_id):
         #get the lis of team id as a first step:
-        team_id_list = Project.getTeamList(project_id)
+        team_id_list = Project.getTeamList(project_id=project_id)
         #check if the project is already has team :
         if len(team_id_list) == 0:
             return []
@@ -66,6 +66,16 @@ class ProjectService:
             if target:
                 team_list.append( target.toDict())
         return team_list
+    #check if a team id is related to project : 
+    @staticmethod
+    def is_related_to_project(project_id, team_id):
+        all_ids = Project.getTeamList(project_id)
+        return team_id in all_ids
+    #add a team to a project : 
+    @staticmethod
+    def add_to_project(project_id, team_id):
+        teamAdded = Project.addTeam(project_id, team_id)
+        return teamAdded
     #update project manager :
     @staticmethod
     def update_project_manager(project_id, manager_id):
@@ -85,7 +95,7 @@ class ProjectService:
     def update_project_status(project_id, new_status):
         try:
             projectToUpdate = Project.query.filter_by(id=project_id).first()
-            projectToUpdate["state"] = new_status
+            projectToUpdate.state = new_status
             my_database.session.commit()
             return True
         except Exception as e:
@@ -94,20 +104,28 @@ class ProjectService:
             return False
     #update project details :
     @staticmethod
-    def update_project_details(newName="", newDescription="", newRepository=""):
-        #check the project new name :
+    def update_project_details(
+        project_id="",
+        newName="", 
+        newDescription="", 
+        newRepository=""):
+        #
         try:
-            projectTarget = Project.query.filter_by(name=newName).first()
-            if projectTarget :
+            projectTarget = Project.query.filter_by(id=project_id).first()
+            if not projectTarget :
                 return False
-            
+            #projectTarget = projectTarget.toDict()
+            #check the project new name :
+            alreadyNameUsed = Project.query.filter_by(name=newName).first()
+            if alreadyNameUsed:
+                return False
             #update the provided information : 
             if not newName == "":
-                projectTarget["name"] = newName
+                projectTarget.name = newName
             if not newDescription == "":
-                projectTarget["description"] = newDescription
+                projectTarget.description = newDescription
             if not newRepository == "":
-                projectTarget["url"] = newRepository
+                projectTarget.url = newRepository
             #sve the new project info : 
             my_database.session.commit()
             return True
