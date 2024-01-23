@@ -76,6 +76,11 @@ class ProjectService:
     def add_to_project(project_id, team_id):
         teamAdded = Project.addTeam(project_id, team_id)
         return teamAdded
+    #delete team from project :
+    @staticmethod
+    def delete_from_project(project_id, team_id):
+        teamDeleted = Project.deleteTeam(project_id, team_id)
+        return teamDeleted
     #update project manager :
     @staticmethod
     def update_project_manager(project_id, manager_id):
