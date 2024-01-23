@@ -60,7 +60,21 @@ class Project(my_database.Model):
             print(" Error linking team into project ", e)
             my_database.session.rollback()
             return False
-
+    @staticmethod
+    def deleteTeam(project_id, team_id):
+        sql_statement = text(
+            "DELETE FROM team_project WHERE team_id = :team_id AND project_id = :project_id"
+        )
+        try:
+            my_database.session.execute(
+                sql_statement, {"project_id": project_id, "team_id": team_id}
+            )
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error Unlinking team into project", e)
+            my_database.session.rollback()
+            return False
     def toDict(self):
         return dict(
             id=self.id,
