@@ -159,7 +159,6 @@ def update_project_infor(project_id):
         return jsonify({"message": "Project details updated successufully"}),202
 
 
-
 #add team to project : 
 @project_api.route(Prefixer+"/<project_id>/Team/Add/<team_id>", methods=["PUT"])
 @cross_origin()
@@ -180,7 +179,21 @@ def add_team(project_id, team_id):
                 return jsonify({"message": "Failed to add team to project "}),403
         return jsonify({"message":"Team added successufully to project"}),200
 
-
+#delete team from  project : 
+@project_api.route(Prefixer+"/<project_id>/Team/Delete/<team_id>", methods=["PUT"])
+@cross_origin()
+def delete_team(project_id, team_id):
+        #check if project exists:
+        projectTarget = ProjectService.get_project_by_id( project_id )
+        if not projectTarget: return jsonify({"message": "Project not found"}),404
+        #check if team exists : 
+        teamTarget = TeamService.alreadyExist( team_id )
+        if not teamTarget: return jsonify({"message": "Team not found"}),404
+        #call static service to delete  team form the project teamlist :
+        deleteTeamStatus = ProjectService.delete_from_project(project_id,team_id)
+        if not deleteTeamStatus:
+                return jsonify({"message": "Failed to delete team from project "}),403
+        return jsonify({"message":"Team deleted successufully to project"}),200
 
 
 
