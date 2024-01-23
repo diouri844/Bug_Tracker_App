@@ -13,6 +13,7 @@ import os
 from Package.BluePrints.User import UserController 
 from Package.BluePrints.Team import TeamController
 from Package.BluePrints.Project import ProjectController
+from Package.BluePrints.Invitation import InvitationController
 
 #load env variables: 
 load_dotenv()
@@ -33,6 +34,7 @@ my_database.init_app(my_app)
 my_app.register_blueprint(UserController)
 my_app.register_blueprint(TeamController)
 my_app.register_blueprint(ProjectController)
+my_app.register_blueprint(InvitationController)
 
 
 @my_app.route(API_PREFIXER,methods=["GET"])
