@@ -1,4 +1,3 @@
-from flask import jsonify
 from Package.Models.User import User
 from Package.Db import my_database
 
