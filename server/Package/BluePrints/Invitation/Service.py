@@ -45,5 +45,24 @@ class InvitationService:
         }
         return formated_data
     @staticmethod
-    def say_hi():
-        return f"hey there"
+    def get_invitation_details(invitation_id):
+        invitationTarget = Invitation.query.filter_by(id=invitation_id).first()
+        if not invitationTarget:
+            return {"state":False,"data":{}}
+        return {
+            "state":True,
+            "data": invitationTarget.toDict()
+        }
+    @staticmethod
+    def getInvitationById(invitation_id):
+        return Invitation.query.filter_by(id=invitation_id).first()
+    @staticmethod
+    def updateInvitationState(invitationTarget,new_state):
+        try:
+            invitationTarget["state"] = new_state
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error updating state of Invitation ", e)
+            my_database.session.rollback()
+            return False
