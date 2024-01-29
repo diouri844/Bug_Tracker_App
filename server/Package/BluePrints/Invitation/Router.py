@@ -1,4 +1,5 @@
 from Package.Models.invitation import Invitation
+from Package.Db import my_database
 from Package.BluePrints.User.Service import UserService
 from Package.BluePrints.Invitation.Service import InvitationService 
 from Package.BluePrints import API_PREFIXER, Invitation_PREFIXER
@@ -15,8 +16,6 @@ Prefixer = API_PREFIXER+Invitation_PREFIXER
 @cross_origin()
 def ping_handler():
         return jsonify({"Response": "Invitation Pong"}),200
-
-
 
 #get all invitiation sended to a user with a specific state : 
 @invitation_api.route(Prefixer+"/<target_id>", methods=["GET"])
@@ -61,3 +60,29 @@ def get_all_invitations(target_id):
                 per_page
         )
         return jsonify({"data":paginatedInvitList}),200
+
+#get invitation details by id : 
+@invitation_api.route(Prefixer+"/<invitation_id>/details",methods=["GET"])
+@cross_origin()
+def get_invitation_details(invitation_id):
+        #call the static sservice to get the details of the invitation :
+        inivtationTargetResult = InvitationService.get_invitation_details(invitation_id)
+        if not inivtationTargetResult["state"]:
+                return jsonify({"message":"Invitation not found"}),404
+        return jsonify({"data":inivtationTargetResult["data"]}),201
+
+#update invitation state : 
+@invitation_api.route(Prefixer+"/<invitation_id>/state/<new_state>",methods=["PUT"])
+@cross_origin()
+def update_invitation_state(invitation_id,new_state):
+        #ckeck if the invitation exist : 
+        invitationTarget = InvitationService.getInvitationById(invitation_id)
+        if not invitationTarget:
+                return jsonify({"message":"Invitation not found"}),404
+        #update the current state :
+        updateStateResult = InvitationService.updateInvitationState(
+                invitationTarget,new_state
+        )
+        if not updateStateResult:
+                return jsonify({"message":"Faild to update Invitation state "}),403
+        return jsonify({"message": "State updated successufully "}),202
