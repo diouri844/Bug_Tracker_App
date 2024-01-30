@@ -66,3 +66,33 @@ class InvitationService:
             print("Error updating state of Invitation ", e)
             my_database.session.rollback()
             return False
+    @staticmethod
+    def create_invitation(payload):
+        try:
+            InvitationTarget = Invitation(
+                sender=payload['sender'],
+                reciver=payload['reciver'],
+                description=payload["description"]
+            )
+            #save the Invitation target :
+            my_database.session.add(InvitationTarget)
+            #commit the transaction
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error creating Invitation ", e)
+            my_database.session.rollback()
+            return False
+    @staticmethod
+    def delete_invitation(invitation_id):
+        try:
+            targetItem = Invitation.query.filter_by(id=invitation_id).first()
+            #delete the target :
+            my_database.session.delete(targetItem)
+            #save the changes :
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print("Error deleting Invitation ", e)
+            my_database.session.rollback()
+            return False
