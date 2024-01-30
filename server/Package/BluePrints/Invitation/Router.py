@@ -86,3 +86,38 @@ def update_invitation_state(invitation_id,new_state):
         if not updateStateResult:
                 return jsonify({"message":"Faild to update Invitation state "}),403
         return jsonify({"message": "State updated successufully "}),202
+
+#create new invitation :
+@invitation_api.route(Prefixer+"/<reciver_id>/New", methods=["POST"])
+@cross_origin()
+def send_invitation(reciver_id):
+        #ckeck the reciver user if exist :
+        reciverTarget = UserService.alreadyExists(reciver_id)
+        if not reciverTarget:
+                return jsonify({"message": "User not found" }),404
+        #extract nedde info from request body  :
+        invitationPayload = request.json
+        #ckeck required fields  sender , description :
+        if not "sender" in invitationPayload:
+                return jsonify({"message": "sender id is required "}),403
+        if not "description" in invitationPayload:
+                return jsonify({"message": "description is required "}),403
+        #the reciver is the authenticated user 
+        #add the reciver id to the payload 
+        invitationPayload["reciver"] = reciver_id
+        #call the create static method : 
+        insertInvititionResponse = InvitationService.create_invitation(invitationPayload)
+        #ckeck the state : 
+        if not insertInvititionResponse:
+                return jsonify({"message": "Faild to create a new Invitation"}),400
+        return jsonify({"message":"Invitaion Created Successufully "}),201
+
+#delete invitation :
+@invitation_api.route(Prefixer+"/<invitation_id>", methods=["DELETE"])
+@cross_origin()
+def delete_invitation(invitation_id):
+        #call status method to delete the invitation by id :
+        deleteInvitaionStatus = InvitationService.delete_invitation( invitation_id )
+        if not deleteInvitaionStatus:
+                return jsonify({"message":"Failure to delete the invitation"}),400
+        return jsonify({"message":"Invitation deleted successufully"}),200
