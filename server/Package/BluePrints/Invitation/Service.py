@@ -1,3 +1,4 @@
+import datetime
 from Package.Models.invitation import Invitation
 from Package.Db import my_database
 from sqlalchemy import and_
@@ -60,6 +61,10 @@ class InvitationService:
     def updateInvitationState(invitationTarget,new_state):
         try:
             invitationTarget["state"] = new_state
+            #check if the state is Accepted :
+            if new_state == "Accepted":
+                #update the accpeted at prop :
+                invitationTarget["accepted_at"] = str(datetime.today()).split()[0]
             my_database.session.commit()
             return True
         except Exception as e:
