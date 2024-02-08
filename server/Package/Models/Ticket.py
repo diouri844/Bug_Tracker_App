@@ -31,7 +31,6 @@ class Ticket(my_database.Model):
             description=self.description,
             status=self.status,
             assigned_user_id=self.assigned_user_id,
-            status=self.status,
             project_id=self.project_id,
             opend_at = self.opend_at,
             closed_at = self.closed_at
