@@ -80,3 +80,22 @@ class TicketService:
             "total_items":TickerList.total
         }
         return formated_data
+    @staticmethod
+    def set_ticket_status(ticket_payload, new_date):
+        try:
+            ticket_payload["status"] = "Closed"
+            ticket_payload["closed_at"] = new_date
+            my_database.session.commit()
+        except Exception as e:
+            print( "Error Updating ticket ", e)
+            my_database.session.rollback()
+            return False
+    @staticmethod
+    def set_ticket_priority(ticket_payload, ticket_priority):
+        try:
+            ticket_payload["priority"] = ticket_priority
+            my_database.session.commit()
+        except Exception as e:
+            print( "Error Updating ticket priority ", e)
+            my_database.session.rollback()
+            return False
