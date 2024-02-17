@@ -6,6 +6,7 @@ from Package.Db import my_database
 from Package.BluePrints import API_PREFIXER, Ticker_PREFIXER
 from flask import request, jsonify , Blueprint
 from flask_cors import cross_origin
+from sqlalchemy import func
 
 
 
@@ -88,3 +89,43 @@ def getUserTickets(user_id):
         status=status
     )
     return jsonify({"data":userTicket}),201
+
+
+#close ticket  :
+@ticket_api.route(Prefixer+"/<ticket_id>/Close", methods=["PUT"])
+@cross_origin()
+def setTicketClose(ticker_id):
+    #check if ticket exist and not closed yet :
+    targetTicket = TicketService.get_ticket_details(ticker_id)
+    #check the state of the resul : 
+    if not targetTicket["state"]:
+        return jsonify({"message": "Ticket not found"}),404
+    #chcek if the ticket is already closed :
+    if not targetTicket["data"]["closed_at"] is None:
+        return jsonify({"message": "Ticket already closed "}),404
+    #all is great nor time to update the  open ticket date : 
+    currenteDate = func.now()
+    #call the static service method to update the open ticket prop :
+    updateStatus = TicketService.set_ticket_status(targetTicket["data"], currenteDate)
+    if not updateStatus:
+        return jsonify({"message":"Failed to close opened ticket"}),400
+    return jsonify({"message": "Ticket closed succeffully "}),202
+
+
+#update priority of ticket :
+@ticket_api.route(Prefixer+"/<ticket_id>/priority/<priority_status>",methods=["PUT"])
+@cross_origin()
+def update_priority(ticket_id, priority_status):
+    #check the ticket if exist : 
+    targetTicket = TicketService.get_ticket_details(ticket_id)
+    #check the state of the resul : 
+    if not targetTicket["state"]:
+        return jsonify({"message": "Ticket not found"}),404
+    #chcek if the ticket is already closed :
+    if not targetTicket["data"]["closed_at"] is None:
+        return jsonify({"message": "Ticket already closed "}),404
+    #call static service to update the ticket priority  :
+    updateStatus = TicketService.set_ticket_priority(targetTicket, priority_status)
+    if not updateStatus:
+        return jsonify({"message": "Failed to update ticket priority "}),403
+    return jsonify({"message": "Ticket Updated successufully "}),202
