@@ -28,14 +28,15 @@ def get_tcket_list():
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page",10))
     #target state of ticket needed : opened , cloded :
-    status = request.args.get("status", "open")
+    status = request.args.get("status", "Open")
     #call static service to get the ticket list :
-    tickerList = TicketService.get_ticket_list(
+    ticketList = TicketService.get_ticket_list(
         page=page,
         per_page=per_page,
         status=status
     )
-    return jsonify({"data":tickerList}),200
+    #print(ticketList)
+    return jsonify({"data":ticketList}),200
 
 
 #get ticket dtails by id :
@@ -129,3 +130,37 @@ def update_priority(ticket_id, priority_status):
     if not updateStatus:
         return jsonify({"message": "Failed to update ticket priority "}),403
     return jsonify({"message": "Ticket Updated successufully "}),202
+
+#create new ticket : 
+@ticket_api.route(Prefixer+"/<project_id>/new", methods=["POST"])
+@cross_origin()
+def create_ticket(project_id):
+    # check if project exist : 
+    projectTarget = ProjectService.get_project_by_id(project_id)
+    if not projectTarget:
+        return jsonify({"message": "Project not found"}),404
+    #extract ticker payload from request body : 
+    ticket_payload = request.json
+    #check required props : 
+    if not "title" in ticket_payload:
+        return jsonify({"message": "Title is required"}),403
+    if not "description" in ticket_payload:
+        return jsonify({"message": "Description is required"}),403
+    if not "assigned_user_id" in ticket_payload:
+        return jsonify({"message": "User is required"}),403
+    # check if the user exist : 
+    user_id = ticket_payload["assigned_user_id"]
+    userTarget = UserService.alreadyExists(user_id)
+    if not userTarget:
+        return jsonify({"message": "User not found"}),404
+    #call static method to create new user ticket : 
+    create_ticket = TicketService.create_ticket(
+        project_id=project_id,
+        ticket_payload=ticket_payload
+    )
+    # check response : 
+    if not create_ticket:
+        return jsonify({"message": "Faild to create Ticket"}),404
+    return jsonify({
+        "message": "Ticket created successfully"
+    }),201
