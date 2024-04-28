@@ -60,11 +60,11 @@ class InvitationService:
     @staticmethod
     def updateInvitationState(invitationTarget,new_state):
         try:
-            invitationTarget["state"] = new_state
+            invitationTarget.state = new_state
             #check if the state is Accepted :
             if new_state == "Accepted":
                 #update the accpeted at prop :
-                invitationTarget["accepted_at"] = str(datetime.today()).split()[0]
+                invitationTarget.accepted_at = str(datetime.datetime.today()).split()[0]
             my_database.session.commit()
             return True
         except Exception as e:
