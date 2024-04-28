@@ -7,22 +7,28 @@ from sqlalchemy import and_
 
 class TicketService:
     @staticmethod
-    def get_ticket_list(page=1, per_page=10, status="open"):
+    def get_ticket_list(page=1, per_page=10, status="Open"):
         #fetch for all tickets :
-        TicketList = Ticket.query.filter(
-            status==status
-        ).paginate(
-            page=page, 
-            per_page=per_page,
-            error_out=False
+        ticket_list = Ticket.query.filter(Ticket.status == status).paginate(
+            page=page, per_page=per_page, error_out=False
         )
-        #clean data :
+        # Format the paginated ticket data into a dictionary
         formated_data = {
-            "items": [ ticket.toDict() for ticket in TicketList],
-            "page":TicketList.page,
-            "per_page":TicketList.per_page,
-            "total_pages":TicketList.pages,
-            "total_items":TicketList.total
+            "items": [
+                { 
+                    "id":ticket.id,
+                    "title":ticket.title,
+                    "description":ticket.description,
+                    "status":ticket.status,
+                    "assigned_user_id":ticket.assigned_user_id,
+                    "project_id":ticket.project_id,
+                    "opend_at":ticket.opend_at,
+                    "closed_at":ticket.closed_at
+                 } for ticket in ticket_list.items],
+            "page": ticket_list.page,
+            "per_page": ticket_list.per_page,
+            "total_pages": ticket_list.pages,
+            "total_items": ticket_list.total
         }
         return formated_data
     @staticmethod
@@ -97,5 +103,21 @@ class TicketService:
             my_database.session.commit()
         except Exception as e:
             print( "Error Updating ticket priority ", e)
+            my_database.session.rollback()
+            return False
+    @staticmethod
+    def create_ticket(ticket_payload, project_id):
+        try:
+            ticker_to_add = Ticket(
+                title=ticket_payload["title"],
+                description=ticket_payload["description"],
+                user_id=ticket_payload["assigned_user_id"],
+                project_id=project_id
+            )
+            my_database.session.add(ticker_to_add)
+            my_database.session.commit()
+            return True
+        except Exception as e:
+            print( "Error Creating ticket ", e)
             my_database.session.rollback()
             return False
