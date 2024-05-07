@@ -1,4 +1,5 @@
 <template>
+    <context-holder />
     <a-form 
       class="w-[700px] m-[3%]"
       :model="formState"
@@ -36,22 +37,28 @@
   </template>
   <script lang="ts" setup>
   import { reactive } from 'vue';
+  import { message } from 'ant-design-vue';
+  import { useRouter } from "vue-router";
+  import IFormState from "../../commun/types/formState.type";
+  const [messageApi, contextHolder] = message.useMessage();
+  const myRouter = useRouter();
   
-  interface FormState {
-    username: string;
-    password: string;
-    remember: boolean;
-  }
-  
-  const formState = reactive<FormState>({
+  const formState = reactive<IFormState>({
     username: '',
     password: '',
     remember: true,
   });
-  const onFinish = (values: any) => {
+
+
+  const onFinish = (values:IFormState ):void =>{
     console.log('Success:', values);
+    // popup response : 
+    messageApi.success(`Welcome back ${values.username} !`);
+    myRouter.push("/home");
+    return;
   };
   
+
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
