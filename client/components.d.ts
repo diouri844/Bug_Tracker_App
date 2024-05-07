@@ -14,7 +14,10 @@ declare module 'vue' {
     AInput: typeof import('ant-design-vue/es')['Input']
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
     ASpace: typeof import('ant-design-vue/es')['Space']
+    'Home.page': typeof import('./src/components/pages/home.page.vue')['default']
     'Login.component': typeof import('./src/components/utils/login.component.vue')['default']
     'Login.page': typeof import('./src/components/pages/login.page.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }
