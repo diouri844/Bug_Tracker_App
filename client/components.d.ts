@@ -11,6 +11,7 @@ declare module 'vue' {
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACheckboxGroup: typeof import('ant-design-vue/es')['CheckboxGroup']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
+    'Add_project.component': typeof import('./src/components/utils/project_utils/add_project.component.vue')['default']
     ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
     ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
     AEmpty: typeof import('ant-design-vue/es')['Empty']
